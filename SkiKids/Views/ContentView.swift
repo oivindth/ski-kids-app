@@ -19,6 +19,7 @@ struct ContentView: View {
                 }
         }
         .tint(AppColors.primary)
+        .preferredColorScheme(.light)
     }
 }
 

@@ -3,6 +3,7 @@ import SwiftUI
 struct ChildCardView: View {
     let child: Child
     let onDelete: () -> Void
+    @State private var showingDeleteConfirmation = false
 
     private var abilityColor: Color {
         switch child.abilityLevel {
@@ -99,10 +100,18 @@ struct ChildCardView: View {
         .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
         .contextMenu {
             Button(role: .destructive) {
-                onDelete()
+                showingDeleteConfirmation = true
             } label: {
                 Label("Delete Profile", systemImage: "trash")
             }
+        }
+        .alert("Delete \(child.name.isEmpty ? "this profile" : child.name)?", isPresented: $showingDeleteConfirmation) {
+            Button("Cancel", role: .cancel) {}
+            Button("Delete", role: .destructive) {
+                onDelete()
+            }
+        } message: {
+            Text("This will permanently remove the profile and all saved measurements.")
         }
     }
 }
