@@ -11,7 +11,7 @@ struct TipsView: View {
         case boots = "Boot Fitting"
         case din = "Understanding DIN"
         case wax = "Kick Wax Guide"
-        case checklist = "Equipment Checklist"
+        case checklist = "Packing Essentials"
     }
 
     var body: some View {
@@ -333,58 +333,20 @@ struct TipsAccordion: View {
     }
 
     private var checklistContent: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Alpine Checklist")
-                    .font(.callout)
-                    .fontWeight(.bold)
-                    .foregroundStyle(AppColors.primary)
+        VStack(alignment: .leading, spacing: 8) {
+            Text("The easy-to-forget essentials")
+                .font(.caption)
+                .foregroundStyle(AppColors.textSecondary)
+                .padding(.bottom, 4)
 
-                let alpineItems = [
-                    "Helmet (certified: EN 1077 or ASTM F2040) — sized to head circumference",
-                    "Goggles (UV protection, fog-resistant lens)",
-                    "Ski jacket (waterproof, windproof)",
-                    "Ski pants (waterproof, reinforced knees)",
-                    "Gloves or mittens (waterproof, warm)",
-                    "Ski socks (wool or synthetic, NOT cotton)",
-                    "Neck gaiter or balaclava",
-                    "Back protector (recommended for off-piste / racing)",
-                    "Wrist guards (recommended for beginners)",
-                    "Skis sized correctly",
-                    "Boots sized correctly",
-                    "Bindings DIN set by certified technician",
-                    "Poles sized correctly",
-                ]
-                ForEach(alpineItems, id: \.self) { item in
-                    ChecklistItem(text: item)
-                }
-            }
-
-            Divider()
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Cross-Country Checklist")
-                    .font(.callout)
-                    .fontWeight(.bold)
-                    .foregroundStyle(AppColors.secondary)
-
-                let xcItems = [
-                    "Helmet (optional but recommended for young children)",
-                    "Goggles or sunglasses (UV protection)",
-                    "XC ski jacket (lighter than alpine; wind-resistant)",
-                    "XC ski pants / tights (stretchy)",
-                    "Gloves (thinner than alpine; XC-specific)",
-                    "XC ski socks",
-                    "Skis sized correctly",
-                    "Boots (correct binding system: NNN or SNS)",
-                    "Bindings (matching system)",
-                    "Poles sized correctly",
-                    "Kick wax or waxless skis (for classic)",
-                ]
-                ForEach(xcItems, id: \.self) { item in
-                    ChecklistItem(text: item)
-                }
-            }
+            ChecklistItem(text: "Helmet (mandatory at most resorts)")
+            ChecklistItem(text: "Goggles or sunglasses (UV protection)")
+            ChecklistItem(text: "Ski socks — wool or synthetic, never cotton")
+            ChecklistItem(text: "Neck gaiter or balaclava")
+            ChecklistTagItem(text: "Bindings DIN checked this season", tag: "Alpine", tagColor: AppColors.primary)
+            ChecklistTagItem(text: "Lighter XC-specific gloves", tag: "XC", tagColor: AppColors.secondary)
+            ChecklistTagItem(text: "Boots match binding system (NNN/Prolink)", tag: "XC", tagColor: AppColors.secondary)
+            ChecklistTagItem(text: "Kick wax, or confirm skis are waxless", tag: "XC", tagColor: AppColors.secondary)
         }
     }
 }
@@ -407,6 +369,43 @@ struct TipText: View {
                 .foregroundStyle(AppColors.textPrimary)
                 .fixedSize(horizontal: false, vertical: true)
         }
+    }
+}
+
+struct ChecklistTagItem: View {
+    let text: String
+    let tag: String
+    let tagColor: Color
+    @State private var isChecked = false
+
+    var body: some View {
+        Button {
+            isChecked.toggle()
+        } label: {
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: isChecked ? "checkmark.square.fill" : "square")
+                    .foregroundStyle(isChecked ? AppColors.secondary : AppColors.textSecondary.opacity(0.4))
+                    .font(.body)
+
+                Text(text)
+                    .font(.callout)
+                    .foregroundStyle(isChecked ? AppColors.textSecondary : AppColors.textPrimary)
+                    .strikethrough(isChecked, color: AppColors.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Spacer()
+
+                Text(tag)
+                    .font(.caption2)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(tagColor)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(tagColor.opacity(0.12))
+                    .clipShape(Capsule())
+            }
+        }
+        .buttonStyle(.plain)
     }
 }
 

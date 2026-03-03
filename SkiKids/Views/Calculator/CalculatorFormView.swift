@@ -94,6 +94,7 @@ struct CalculatorFormView: View {
         FormCard(title: "Child Name", icon: "person.fill", iconColor: AppColors.primary) {
             TextField("Name (optional)", text: $viewModel.name)
                 .font(.body)
+                .foregroundStyle(AppColors.textPrimary)
                 .padding(.horizontal, 4)
         }
     }
@@ -270,6 +271,7 @@ struct CalculatorFormView: View {
                 context: modelContext
             )
         }
+        dismiss()
     }
 }
 
