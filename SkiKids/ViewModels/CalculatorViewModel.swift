@@ -3,10 +3,18 @@ import Observation
 
 @Observable
 final class CalculatorViewModel {
-    enum BSLInputMode: String, CaseIterable {
-        case estimate = "Estimate"
-        case shoeSize = "Shoe Size"
-        case bsl = "BSL"
+    enum BSLInputMode: Int, CaseIterable {
+        case estimate = 0
+        case shoeSize = 1
+        case bsl = 2
+
+        var label: String {
+            switch self {
+            case .estimate: return "Estimate"
+            case .shoeSize: return "Shoe Size"
+            case .bsl: return "BSL"
+            }
+        }
     }
 
     var name: String = ""
@@ -173,13 +181,18 @@ final class CalculatorViewModel {
         heightCm = child.heightCm
         weightKg = child.weightKg
         age = child.age
-        if let bsl = child.bslMm {
-            bslMm = bsl
-            bslInputMode = .bsl
-        } else {
-            bslInputMode = .estimate
+
+        let mode = BSLInputMode(rawValue: child.bslInputModeRaw ?? 0) ?? .estimate
+        bslInputMode = mode
+        switch mode {
+        case .shoeSize:
+            shoeSize = child.shoeSize ?? 32
+        case .bsl:
+            bslMm = child.bslMm ?? 230
+        case .estimate:
+            break
         }
-        shoeSize = 32
+
         abilityLevel = child.abilityLevel
         selectedSkiTypes = Set(child.skiTypes)
     }

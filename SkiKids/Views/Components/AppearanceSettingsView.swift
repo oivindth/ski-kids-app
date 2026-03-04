@@ -53,6 +53,7 @@ struct AppearanceSettingsView: View {
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
+            .preferredColorScheme(appearanceMode.colorScheme)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") { dismiss() }

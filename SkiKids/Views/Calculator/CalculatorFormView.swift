@@ -78,7 +78,7 @@ struct CalculatorFormView: View {
                 ResultsView(
                     recommendation: rec,
                     existingChild: existingChild,
-                    onSave: { saveFromResults() }
+                    onSave: existingChild == nil ? { saveFromResults() } : nil
                 )
             }
         }
@@ -129,6 +129,9 @@ struct CalculatorFormView: View {
         Button {
             viewModel.calculate()
             if viewModel.isValid {
+                if isEditing {
+                    saveProfileWithoutDismiss()
+                }
                 if let child = existingChild {
                     childViewModel.updateLastCalculated(for: child, context: modelContext)
                 }
@@ -159,36 +162,37 @@ struct CalculatorFormView: View {
         .padding(.top, 4)
     }
 
-    private func saveProfile() {
+    private func performSave(child: Child? = nil, shouldDismiss: Bool = true) {
         childViewModel.saveChild(
-            existingChild,
+            child,
             name: viewModel.name,
             heightCm: viewModel.heightCm,
             weightKg: viewModel.weightKg,
             age: viewModel.age,
             bslMm: viewModel.bslInputMode == .bsl ? viewModel.bslMm : nil,
+            bslInputModeRaw: viewModel.bslInputMode.rawValue,
+            shoeSize: viewModel.bslInputMode == .shoeSize ? viewModel.shoeSize : nil,
             abilityLevel: viewModel.abilityLevel,
             skiTypes: Array(viewModel.selectedSkiTypes),
             context: modelContext
         )
-        dismiss()
+        if shouldDismiss { dismiss() }
+    }
+
+    private func saveProfile() {
+        performSave(child: existingChild)
+    }
+
+    private func saveProfileWithoutDismiss() {
+        performSave(child: existingChild, shouldDismiss: false)
     }
 
     private func saveFromResults() {
         if existingChild == nil {
-            childViewModel.saveChild(
-                nil,
-                name: viewModel.name,
-                heightCm: viewModel.heightCm,
-                weightKg: viewModel.weightKg,
-                age: viewModel.age,
-                bslMm: viewModel.bslInputMode == .bsl ? viewModel.bslMm : nil,
-                abilityLevel: viewModel.abilityLevel,
-                skiTypes: Array(viewModel.selectedSkiTypes),
-                context: modelContext
-            )
+            performSave(child: nil)
+        } else {
+            dismiss()
         }
-        dismiss()
     }
 }
 
