@@ -106,5 +106,7 @@ struct SkiLengthVisual: View {
         .background(AppColors.surface)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .shadow(color: .black.opacity(0.04), radius: 4, x: 0, y: 2)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Ski length range: \(minCm) to \(maxCm) centimeters. Child height: \(heightCm) centimeters.")
     }
 }

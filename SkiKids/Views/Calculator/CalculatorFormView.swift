@@ -9,7 +9,6 @@ struct CalculatorFormView: View {
     @State private var viewModel = CalculatorViewModel()
     @State private var childViewModel = ChildViewModel()
     @State private var showingResults = false
-    @State private var validationAlert = false
 
     private var isEditing: Bool { existingChild != nil }
 
@@ -83,11 +82,7 @@ struct CalculatorFormView: View {
                 )
             }
         }
-        .alert("Please fix the following", isPresented: $validationAlert) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(viewModel.validationErrors.joined(separator: "\n"))
-        }
+        .sensoryFeedback(.success, trigger: showingResults)
     }
 
     private var nameSection: some View {
@@ -100,124 +95,44 @@ struct CalculatorFormView: View {
     }
 
     private var measurementsSection: some View {
-        FormCard(title: "Measurements", icon: "ruler.fill", iconColor: AppColors.secondary) {
-            VStack(spacing: 16) {
-                StepperRow(
-                    label: "Height",
-                    value: $viewModel.heightCm,
-                    unit: "cm",
-                    range: 60...200,
-                    step: 1
-                )
-
-                Divider()
-
-                StepperRow(
-                    label: "Weight",
-                    value: $viewModel.weightKg,
-                    unit: "kg",
-                    range: 8...80,
-                    step: 1
-                )
-
-                Divider()
-
-                StepperRow(
-                    label: "Age",
-                    value: $viewModel.age,
-                    unit: "years",
-                    range: 2...17,
-                    step: 1
-                )
-            }
-        }
+        MeasurementsFormSection(
+            heightCm: $viewModel.heightCm,
+            weightKg: $viewModel.weightKg,
+            age: $viewModel.age,
+            heightError: viewModel.hasAttemptedCalculation ? viewModel.heightError : nil,
+            weightError: viewModel.hasAttemptedCalculation ? viewModel.weightError : nil,
+            ageError: viewModel.hasAttemptedCalculation ? viewModel.ageError : nil
+        )
     }
 
     private var abilitySection: some View {
-        FormCard(title: "Ability Level", icon: "star.fill", iconColor: AppColors.warning) {
-            VStack(spacing: 10) {
-                ForEach(AbilityLevel.allCases, id: \.self) { level in
-                    AbilityRow(
-                        level: level,
-                        isSelected: viewModel.abilityLevel == level
-                    ) {
-                        viewModel.abilityLevel = level
-                    }
-                }
-            }
-        }
+        AbilityFormSection(abilityLevel: $viewModel.abilityLevel)
     }
 
     private var skiTypeSection: some View {
-        FormCard(title: "Ski Type", icon: "snowflake", iconColor: AppColors.primary) {
-            VStack(spacing: 10) {
-                ForEach(SkiType.allCases, id: \.self) { type in
-                    SkiTypeRow(
-                        type: type,
-                        isSelected: viewModel.selectedSkiTypes.contains(type)
-                    ) {
-                        if viewModel.selectedSkiTypes.contains(type) {
-                            viewModel.selectedSkiTypes.remove(type)
-                        } else {
-                            viewModel.selectedSkiTypes.insert(type)
-                        }
-                    }
-                }
-            }
-        }
+        SkiTypeFormSection(
+            selectedSkiTypes: $viewModel.selectedSkiTypes,
+            skiTypeError: viewModel.hasAttemptedCalculation ? viewModel.skiTypeError : nil
+        )
     }
 
     private var bslSection: some View {
-        FormCard(title: "Boot Sole Length", icon: "shoe.fill", iconColor: AppColors.secondary) {
-            VStack(alignment: .leading, spacing: 14) {
-                Toggle("I know the BSL", isOn: $viewModel.hasBSL)
-                    .tint(AppColors.primary)
-
-                if viewModel.hasBSL {
-                    StepperRow(
-                        label: "BSL",
-                        value: $viewModel.bslMm,
-                        unit: "mm",
-                        range: 150...330,
-                        step: 5
-                    )
-                } else {
-                    Toggle("I know the EU shoe size", isOn: $viewModel.hasShoeSize)
-                        .tint(AppColors.primary)
-
-                    if viewModel.hasShoeSize {
-                        StepperRow(
-                            label: "EU Shoe Size",
-                            value: $viewModel.shoeSize,
-                            unit: "",
-                            range: 15...42,
-                            step: 1
-                        )
-                        Text("BSL will be estimated from shoe size EU \(viewModel.shoeSize).")
-                            .font(.caption)
-                            .foregroundStyle(AppColors.textSecondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    } else {
-                        Text("BSL will be estimated from height. Provide the actual Boot Sole Length (printed inside the boot) or EU shoe size for accurate DIN results.")
-                            .font(.caption)
-                            .foregroundStyle(AppColors.textSecondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-            }
-        }
+        BSLFormSection(
+            bslInputMode: $viewModel.bslInputMode,
+            bslMm: $viewModel.bslMm,
+            shoeSize: $viewModel.shoeSize,
+            bslError: viewModel.hasAttemptedCalculation ? viewModel.bslError : nil
+        )
     }
 
     private var calculateButton: some View {
         Button {
+            viewModel.calculate()
             if viewModel.isValid {
-                viewModel.calculate()
                 if let child = existingChild {
                     childViewModel.updateLastCalculated(for: child, context: modelContext)
                 }
                 showingResults = true
-            } else {
-                validationAlert = true
             }
         } label: {
             HStack {
@@ -239,6 +154,8 @@ struct CalculatorFormView: View {
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .shadow(color: AppColors.accent.opacity(0.4), radius: 8, x: 0, y: 4)
         }
+        .accessibilityLabel("Calculate Recommendations")
+        .accessibilityHint("Calculates ski length, pole length, and DIN settings based on the entered measurements")
         .padding(.top, 4)
     }
 
@@ -249,7 +166,7 @@ struct CalculatorFormView: View {
             heightCm: viewModel.heightCm,
             weightKg: viewModel.weightKg,
             age: viewModel.age,
-            bslMm: viewModel.hasBSL ? viewModel.bslMm : nil,
+            bslMm: viewModel.bslInputMode == .bsl ? viewModel.bslMm : nil,
             abilityLevel: viewModel.abilityLevel,
             skiTypes: Array(viewModel.selectedSkiTypes),
             context: modelContext
@@ -265,7 +182,7 @@ struct CalculatorFormView: View {
                 heightCm: viewModel.heightCm,
                 weightKg: viewModel.weightKg,
                 age: viewModel.age,
-                bslMm: viewModel.hasBSL ? viewModel.bslMm : nil,
+                bslMm: viewModel.bslInputMode == .bsl ? viewModel.bslMm : nil,
                 abilityLevel: viewModel.abilityLevel,
                 skiTypes: Array(viewModel.selectedSkiTypes),
                 context: modelContext
@@ -305,19 +222,42 @@ struct FormCard<Content: View>: View {
 struct StepperRow: View {
     let label: String
     @Binding var value: Int
-    let unit: String
     let range: ClosedRange<Int>
     let step: Int
+    let unit: String
+    let icon: String
+    let iconColor: Color
+
+    @State private var isEditing = false
+    @State private var editText = ""
+    @FocusState private var textFieldFocused: Bool
+
+    init(label: String, value: Binding<Int>, unit: String, range: ClosedRange<Int>, step: Int, icon: String = "", iconColor: Color = .clear) {
+        self.label = label
+        self._value = value
+        self.unit = unit
+        self.range = range
+        self.step = step
+        self.icon = icon
+        self.iconColor = iconColor
+    }
 
     var body: some View {
-        HStack {
+        HStack(spacing: 16) {
+            if !icon.isEmpty {
+                Image(systemName: icon)
+                    .font(.body)
+                    .foregroundStyle(iconColor)
+                    .frame(width: 24)
+            }
+
             Text(label)
-                .font(.body)
+                .font(.subheadline)
                 .foregroundStyle(AppColors.textPrimary)
 
             Spacer()
 
-            HStack(spacing: 12) {
+            HStack(spacing: 8) {
                 Button {
                     if value - step >= range.lowerBound {
                         value -= step
@@ -325,14 +265,47 @@ struct StepperRow: View {
                 } label: {
                     Image(systemName: "minus.circle.fill")
                         .font(.title3)
-                        .foregroundStyle(AppColors.primary)
+                        .foregroundStyle(value <= range.lowerBound ? AppColors.textSecondary.opacity(0.3) : AppColors.primary)
+                }
+                .frame(minWidth: 44, minHeight: 44)
+                .disabled(value <= range.lowerBound)
+
+                if isEditing {
+                    TextField("", text: $editText)
+                        .keyboardType(.numberPad)
+                        .multilineTextAlignment(.center)
+                        .font(.system(.body, design: .rounded, weight: .bold))
+                        .foregroundStyle(AppColors.textPrimary)
+                        .frame(width: 60)
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 8)
+                        .background(AppColors.primary.opacity(0.08))
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .focused($textFieldFocused)
+                        .onSubmit { commitEdit() }
+                        .onChange(of: textFieldFocused) { _, focused in
+                            if !focused { commitEdit() }
+                        }
+                } else {
+                    Text("\(value)")
+                        .font(.system(.body, design: .rounded, weight: .bold))
+                        .foregroundStyle(AppColors.textPrimary)
+                        .frame(width: 60)
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 8)
+                        .background(AppColors.primary.opacity(0.05))
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .onTapGesture {
+                            editText = "\(value)"
+                            isEditing = true
+                            textFieldFocused = true
+                        }
                 }
 
-                Text("\(value) \(unit)")
-                    .font(.body)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(AppColors.textPrimary)
-                    .frame(minWidth: 80, alignment: .center)
+                Text(unit)
+                    .font(.caption)
+                    .foregroundStyle(AppColors.textSecondary)
+                    .frame(width: 28, alignment: .leading)
 
                 Button {
                     if value + step <= range.upperBound {
@@ -341,10 +314,32 @@ struct StepperRow: View {
                 } label: {
                     Image(systemName: "plus.circle.fill")
                         .font(.title3)
-                        .foregroundStyle(AppColors.primary)
+                        .foregroundStyle(value >= range.upperBound ? AppColors.textSecondary.opacity(0.3) : AppColors.primary)
                 }
+                .frame(minWidth: 44, minHeight: 44)
+                .disabled(value >= range.upperBound)
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(label)
+        .accessibilityValue("\(value) \(unit)")
+        .accessibilityAdjustableAction { direction in
+            switch direction {
+            case .increment:
+                if value + step <= range.upperBound { value += step }
+            case .decrement:
+                if value - step >= range.lowerBound { value -= step }
+            @unknown default: break
+            }
+        }
+    }
+
+    private func commitEdit() {
+        if let newValue = Int(editText) {
+            value = min(max(newValue, range.lowerBound), range.upperBound)
+        }
+        isEditing = false
+        textFieldFocused = false
     }
 }
 
@@ -385,6 +380,10 @@ struct AbilityRow: View {
         .padding(10)
         .background(isSelected ? AppColors.primary.opacity(0.06) : Color.clear)
         .clipShape(RoundedRectangle(cornerRadius: 10))
+        .frame(minHeight: 44)
+        .accessibilityLabel(level.rawValue)
+        .accessibilityHint(level.description)
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
     }
 }
 
@@ -415,5 +414,9 @@ struct SkiTypeRow: View {
         }
         .padding(.horizontal, 4)
         .padding(.vertical, 6)
+        .frame(minHeight: 44)
+        .accessibilityLabel(type.rawValue)
+        .accessibilityHint(isSelected ? "Selected. Tap to deselect." : "Tap to select.")
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
     }
 }

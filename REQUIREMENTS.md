@@ -1,23 +1,24 @@
 # Kids' Ski Equipment Sizing App — Product Requirements Document
 
-**Version:** 1.0  
-**Date:** 2026-03-03  
-**Author:** Product Owner  
-**Status:** Draft for iOS Development
+**Version:** 1.1
+**Date:** 2026-03-04
+**Author:** Product Owner
+**Status:** Updated to match current implementation
 
 ---
 
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [User Input Fields](#user-input-fields)
-3. [Cross-Country Ski Length](#cross-country-ski-length)
-4. [Alpine / Downhill Ski Length](#alpine--downhill-ski-length)
-5. [DIN Settings (Alpine Bindings)](#din-settings-alpine-bindings)
-6. [Ski Pole Length](#ski-pole-length)
-7. [Boot Sizing](#boot-sizing)
-8. [Additional Features](#additional-features)
-9. [Appendix: Reference Tables](#appendix-reference-tables)
+2. [App Structure](#app-structure)
+3. [User Input Fields](#user-input-fields)
+4. [Cross-Country Ski Length](#cross-country-ski-length)
+5. [Alpine / Downhill Ski Length](#alpine--downhill-ski-length)
+6. [DIN Settings (Alpine Bindings)](#din-settings-alpine-bindings)
+7. [Ski Pole Length](#ski-pole-length)
+8. [Boot Sizing](#boot-sizing)
+9. [Additional Features](#additional-features)
+10. [Appendix: Reference Tables](#appendix-reference-tables)
 
 ---
 
@@ -26,6 +27,50 @@
 This app helps parents size ski equipment for children using industry-standard formulas and lookup tables derived from ISO 11088 and widely adopted retailer guidelines (REI, Salomon, Nordica, Rossignol, and certified ski shop protocols). The app covers alpine/downhill skiing and cross-country (classic and skate) skiing.
 
 Safety note: DIN settings in particular carry real liability. The app must display a disclaimer that all DIN values are recommendations only and should be verified and set by a certified ski technician.
+
+---
+
+## App Structure
+
+The app uses a three-tab layout:
+
+| Tab | Purpose |
+|---|---|
+| **My Kids** | Saved child profiles with persistent data (SwiftData). Tapping a profile shows results immediately. |
+| **Quick Calc** | Ephemeral calculator for one-off sizing. Results are not saved. |
+| **Tips & Info** | Static reference content: measuring guide, equipment tips, wax guide, packing checklist. |
+
+### Navigation Flow — My Kids
+
+1. **Profile list** — shows saved children sorted by creation date (newest first)
+2. **Tap a profile** → navigates to **ChildResultsView** showing calculated recommendations immediately
+3. **"Edit" toolbar button** → pushes **CalculatorFormView** for editing measurements
+4. **Save** → pops back to results, which auto-recalculate from updated data
+5. **"+" button** → opens CalculatorFormView as a sheet for adding a new child
+6. **New child flow**: fill form → Calculate → view results → Save Profile (persists to SwiftData) → dismiss
+
+### Navigation Flow — Quick Calc
+
+1. Fill form (same fields as My Kids)
+2. Tap "Get Recommendations"
+3. View results (no save option — results are ephemeral)
+4. "Reset" toolbar button clears all fields
+
+### Onboarding
+
+First launch shows a full-screen onboarding view. Dismissed via "Get Started" button. State persisted via `@AppStorage("hasSeenOnboarding")`.
+
+### Appearance Setting
+
+Manual dark/light mode control via a settings sheet (gear icon on My Kids tab):
+
+| Mode | Behavior |
+|---|---|
+| System (default) | Follows device setting |
+| Light | Forces light mode |
+| Dark | Forces dark mode |
+
+Persisted via `@AppStorage("appearanceMode")`. Applied as `.preferredColorScheme()` on the root TabView.
 
 ---
 
@@ -39,9 +84,19 @@ These are the inputs collected per child profile. All fields except name are req
 | Height | Integer (cm) | 60–200 cm | Measured without shoes |
 | Weight | Integer (kg) | 8–80 kg | Used for DIN and pole sizing |
 | Age | Integer (years) | 2–17 | Used for DIN adjustment and age-bracket logic |
-| Boot Sole Length (BSL) | Integer (mm) | 150–330 mm | Optional; needed for precise DIN lookup. Can be estimated from shoe size if unknown |
+| Boot Sole Length (BSL) | Integer (mm) | 150–330 mm | Optional; needed for precise DIN lookup. Can be estimated from shoe size or height if unknown |
 | Ability Level | Enum | Beginner / Intermediate / Advanced | Used for ski length and DIN type |
 | Ski Type | Enum (multi-select) | Alpine, XC Classic, XC Skate | Determines which calculations to show |
+
+### BSL Input Modes
+
+The app supports three BSL input modes:
+
+| Mode | Description |
+|---|---|
+| **Estimate** (default) | BSL estimated from height using lookup table. Warning shown in results. |
+| **Shoe Size** | BSL estimated from EU shoe size. Warning shown in results. |
+| **BSL** | User enters actual BSL from inside the boot. Most accurate. |
 
 ### Ability Level Definitions (display in app)
 
@@ -49,24 +104,42 @@ These are the inputs collected per child profile. All fields except name are req
 - **Intermediate:** Comfortable on groomed runs; skiing most terrain; moderate speed (DIN Type II)
 - **Advanced:** Aggressive; skiing all terrain including moguls, off-piste, or racing (DIN Type III)
 
-### Boot Sole Length (BSL) Estimation Table
+### Boot Sole Length (BSL) Estimation — From EU Shoe Size
 
 If BSL is unknown, estimate from EU shoe size. Show this as a helper in the app with a note that actual BSL varies by boot brand and must be confirmed from the boot.
 
 | EU Size | Approx BSL (mm) |
 |---|---|
-| 15–16 | 150–165 |
-| 17–18 | 166–180 |
-| 19–20 | 181–195 |
-| 21–22 | 196–210 |
-| 23–24 | 211–225 |
-| 25–26 | 226–240 |
-| 27–28 | 241–255 |
-| 29–30 | 256–270 |
-| 31–32 | 271–285 |
-| 33–34 | 286–300 |
-| 35–36 | 301–315 |
-| 37–38 | 316–330 |
+| 15–16 | 150 |
+| 17–18 | 165 |
+| 19–20 | 178 |
+| 21–22 | 192 |
+| 23–24 | 207 |
+| 25–26 | 217 |
+| 27–28 | 228 |
+| 29–30 | 238 |
+| 31–32 | 258 |
+| 33–34 | 268 |
+| 35–36 | 285 |
+| 37–38 | 298 |
+
+### Boot Sole Length (BSL) Estimation — From Height
+
+When neither BSL nor shoe size is known, estimate from height. This is the least accurate method.
+
+| Height (cm) | Approx BSL (mm) |
+|---|---|
+| ≤ 85 | 170 |
+| 86–95 | 185 |
+| 96–105 | 200 |
+| 106–115 | 215 |
+| 116–125 | 235 |
+| 126–135 | 250 |
+| 136–145 | 265 |
+| 146–155 | 280 |
+| 156–165 | 295 |
+| 166–175 | 305 |
+| 176+ | 315 |
 
 ---
 
@@ -88,14 +161,14 @@ Recommended ski length = Child height (cm) + offset (cm)
 
 | Age Group | Ability | Offset | Example (110 cm child) |
 |---|---|---|---|
-| Under 5 yrs | Any | height – 5 to height (no offset or negative) | 100–110 cm |
+| Under 5 yrs | Any | height – 5 to height (no offset or negative) | 105–110 cm |
 | 5–7 yrs | Beginner | height + 0 to +5 cm | 110–115 cm |
 | 5–7 yrs | Intermediate+ | height + 5 to +10 cm | 115–120 cm |
 | 8–11 yrs | Beginner | height + 5 to +10 cm | 115–120 cm |
 | 8–11 yrs | Intermediate | height + 10 to +15 cm | 120–125 cm |
 | 8–11 yrs | Advanced | height + 15 to +20 cm | 125–130 cm |
-| 12+ yrs | Beginner | height + 10 cm | — |
-| 12+ yrs | Intermediate | height + 15 cm | — |
+| 12+ yrs | Beginner | height + 10 to +15 cm | — |
+| 12+ yrs | Intermediate | height + 15 to +20 cm | — |
 | 12+ yrs | Advanced | height + 20 to +25 cm | — |
 
 **Simplified formula for app output (two values: min and max):**
@@ -111,8 +184,8 @@ func classicXCSkiLength(heightCm: Int, ageBracket: AgeBracket, ability: Ability)
     case (.age8to11, .beginner):     return (heightCm + 5, heightCm + 10)
     case (.age8to11, .intermediate): return (heightCm + 10, heightCm + 15)
     case (.age8to11, .advanced):     return (heightCm + 15, heightCm + 20)
-    case (.age12plus, .beginner):    return (heightCm + 10, heightCm + 10)
-    case (.age12plus, .intermediate):return (heightCm + 15, heightCm + 15)
+    case (.age12plus, .beginner):    return (heightCm + 10, heightCm + 15)
+    case (.age12plus, .intermediate):return (heightCm + 15, heightCm + 20)
     case (.age12plus, .advanced):    return (heightCm + 20, heightCm + 25)
     }
 }
@@ -126,7 +199,7 @@ func classicXCSkiLength(heightCm: Int, ageBracket: AgeBracket, ability: Ability)
 
 ### Skate Cross-Country Ski Sizing
 
-Skate skis are always shorter than classic skis for the same skier. Not appropriate for children under ~7–8 years old; the app should warn or hide this option for children under 7.
+Skate skis are always shorter than classic skis for the same skier. Not appropriate for children under 8 years old; the app returns nil (no recommendation) for children under 8.
 
 **General formula:**
 
@@ -136,28 +209,18 @@ Skate ski length = Child height (cm) + offset (cm)
 
 | Age Group | Ability | Offset | Example (130 cm child) |
 |---|---|---|---|
-| 7–9 yrs | Beginner | height + 0 to +5 cm | 130–135 cm |
-| 7–9 yrs | Intermediate | height + 5 cm | 135 cm |
+| 8–9 yrs | Beginner | height + 0 to +5 cm | 130–135 cm |
+| 8–9 yrs | Intermediate+ | height + 5 cm | 135 cm |
 | 10–11 yrs | Beginner | height + 5 cm | 135 cm |
-| 10–11 yrs | Intermediate | height + 7.5 cm | ~137 cm |
+| 10–11 yrs | Intermediate | height + 7.5 cm | ~138 cm |
 | 10–11 yrs | Advanced | height + 10 cm | 140 cm |
 | 12+ yrs | Beginner | height + 5 cm | — |
 | 12+ yrs | Intermediate | height + 7.5 cm | — |
 | 12+ yrs | Advanced | height + 10 cm | — |
 
-**Simplified formula:**
-
-```
-Skate ski length ≈ height × 1.04 to height × 1.08
-```
-
-- Beginners and younger kids: multiply height × 1.04
-- Intermediate: multiply height × 1.05–1.06
-- Advanced: multiply height × 1.07–1.08
-
 ### Rounding
 
-Round all ski lengths to the nearest 5 cm, as skis are manufactured in 5 cm increments (e.g., 100, 105, 110, 115...). Display both the calculated value and the rounded "buy this size" recommendation.
+Round all ski lengths to the nearest 5 cm, as skis are manufactured in 5 cm increments (e.g., 100, 105, 110, 115...).
 
 ```swift
 func roundToNearestFive(_ value: Int) -> Int {
@@ -210,8 +273,9 @@ func alpineSkiLength(heightCm: Int, ability: Ability) -> (min: Int, max: Int) {
 
 ### Age/Size Exceptions
 
-- Children under 4–5 years: use "learner/pizza wedge" ski packages sized at height – 10 to height – 15 cm. These are often packaged as complete systems (skis + bindings) and do not require DIN setting.
-- Children 4–6 years: ski length can be significantly shorter (chin height or below) to prioritize control and confidence. Override formula: height × 0.80 for beginners.
+- Children under 4 years (age ≤ 3): use learner ski packages sized at height – 15 to height – 10 cm (minimum 50 cm). These are often packaged as complete systems (skis + bindings) and do not require DIN setting.
+- Children 4–6 years, beginner: override formula uses height × 0.80 to prioritize control and confidence.
+- Children 6 and under with "Advanced" ability: downgrade to Intermediate sizing for safety and manoeuvrability.
 
 ### Soft vs. Stiff Flex Note
 
@@ -238,163 +302,87 @@ DIN (Deutsches Institut für Normung) is the release force setting on alpine ski
 | Type I | Cautious; prefers low speeds; easy slopes; willing to accept a higher rate of inadvertent release | Beginners, very young children, elderly |
 | Type II | Moderate speeds; variety of slopes; willing to accept some inadvertent release | Most recreational skiers |
 | Type III | High speeds; steep/aggressive terrain; prefers low release rate | Advanced, aggressive, racers |
-| Type J (Junior) | Children below a specific weight/height threshold | Applied when age ≤ 12 AND weight ≤ 30 kg — subtract 1 from calculated DIN |
+| Type J (Junior) | Children aged 9 and under | Applied when age ≤ 9 — shift one code up (lower/safer), per ISO 11088 |
 
 **App mapping:**
 - Beginner → Type I
 - Intermediate → Type II
 - Advanced → Type III
-- If age ≤ 12: apply Junior adjustment (subtract 1 from final DIN, minimum 0.75)
+- If age ≤ 9: apply Junior adjustment (shift one DIN code up to a lower/safer value)
+
+### Age ≤ 3 Exception
+
+DIN settings are NOT calculated for children aged 3 and under. Instead, the app displays a warning: "DIN settings are not calculated for children age 3 and under. Please consult a certified ski school for binding setup."
 
 ### Step-by-Step DIN Calculation
 
 The ISO 11088 standard uses a lookup table that cross-references:
 1. Skier weight (kg) → selects a row group
-2. Boot Sole Length (mm) → adjusts within group
-3. Height (cm) → may move row up or down
+2. Boot Sole Length (mm) → selects sub-row within the group
+3. Height (cm) → may move to a higher code
 4. Skier type → selects column
 
-**Step 1: Determine the "code number" from weight and height**
+**Step 1: Determine the "code number" from weight**
 
-Look up the code number from the table below. If the skier's height places them in a higher row than their weight, use the higher row (more conservative is safer for children — use the lower of the two resulting code numbers when in doubt).
-
-| Code | Weight (kg) | Height (cm) — use higher code if height exceeds |
+| Code | Weight (kg) | Height threshold |
 |---|---|---|
-| A | ≤ 10 | ≤ 148 |
-| B | 11–13 | ≤ 148 |
-| C | 14–17 | ≤ 148 |
-| D | 18–21 | ≤ 148 |
-| E | 22–25 | ≤ 148 |
-| F | 26–30 | ≤ 157 |
-| G | 31–35 | ≤ 166 |
-| H | 36–41 | ≤ 174 |
-| I | 42–48 | ≤ 182 |
-| J | 49–57 | ≤ 189 |
-| K | 58–66 | ≤ 196 |
-| L | 67–78 | ≤ 196 |
-| M | 79–94 | > 196 |
+| A | 10–13 | ≤ 148 |
+| B | 14–17 | ≤ 148 |
+| C | 18–21 | ≤ 148 |
+| D | 22–25 | ≤ 148 |
+| E | 26–30 | ≤ 148 |
+| F | 31–35 | ≤ 157 |
+| G | 36–41 | ≤ 166 |
+| H | 42–48 | ≤ 174 |
+| I | 49–57 | ≤ 182 |
+| J | 58–66 | ≤ 189 |
+| K | 67–78 | ≤ 196 |
+| L | 79–94 | ≤ 196 |
+| M | 95+ | — |
 
-**Height adjustment rule:** If the skier's height places them in a higher code letter than their weight alone, use the higher code letter. Example: weight = 28 kg (code F), height = 160 cm (above 157 cm threshold for F) → use code G.
+**Step 2: Height adjustment**
 
-**Step 2: Apply Boot Sole Length (BSL) sub-adjustment**
+If the skier's height exceeds the threshold for their weight-based code, adjust upward to the next code. Continue until the height is within the threshold.
 
-Within each code group, BSL further refines the DIN value. This is reflected in the full table below.
+**Child safety exception (age ≤ 12):** If the height-adjusted code is higher than the weight-based code, the app keeps the lower weight-based code. This is more conservative/safer for children.
 
-**Step 3: Read DIN from the master lookup table**
+**Step 3: Apply Boot Sole Length sub-lookup**
 
-| Code | BSL ≤ 230 mm | BSL 231–270 mm | BSL 271–310 mm | BSL > 310 mm | → Type I | Type II | Type III |
-|---|---|---|---|---|---|---|---|
-| A | A1 | A2 | A3 | A3 | 0.75 | 1.00 | 1.50 |
-| B | B1 | B2 | B3 | B3 | 1.00 | 1.25 | 1.75 |
-| C | C1 | C2 | C3 | C3 | 1.25 | 1.50 | 2.00 |
-| D | D1 | D2 | D3 | D3 | 1.50 | 2.00 | 2.50 |
-| E | E1 | E2 | E3 | E3 | 2.00 | 2.50 | 3.00 |
-| F | F1 | F2 | F3 | F3 | 2.50 | 3.00 | 3.50 |
-| G | G1 | G2 | G3 | G3 | 3.00 | 3.50 | 4.50 |
-| H | H1 | H2 | H3 | H3 | 3.50 | 4.50 | 5.50 |
-| I | I1 | I2 | I3 | I3 | 4.50 | 5.50 | 6.50 |
-| J | J1 | J2 | J3 | J3 | 5.50 | 6.50 | 7.50 |
-| K | K1 | K2 | K3 | K3 | 6.50 | 7.50 | 8.50 |
-| L | L1 | L2 | L3 | L3 | 7.50 | 8.50 | 10.0 |
-| M | M1 | M2 | M3 | M3 | 8.50 | 10.0 | 12.0 |
+Each code has 6 BSL sub-rows with progressively higher DIN values:
 
-**Simplified DIN lookup table (combined, most practical for app implementation):**
-
-This is the standard table used by certified ski shops, based on ISO 11088 / DIN 7881. The primary variables are weight and BSL. Height is used only for upward code adjustment.
-
-```
-DIN MASTER TABLE
-================
-Rows = Code (weight + height adjusted)
-Columns = Skier Type I / II / III
-
-Code | Weight(kg) | BSL ≤230 | BSL 231-270 | BSL 271-310 | BSL >310 | Type I | Type II | Type III
------|------------|----------|-------------|-------------|----------|--------|---------|----------
- A   |  ≤ 10      |  A1      |   A2        |   A3        |  A3      |  0.75  |  1.00   |   1.50
- B   |  11–13     |  B1      |   B2        |   B3        |  B3      |  1.00  |  1.25   |   1.75
- C   |  14–17     |  C1      |   C2        |   C3        |  C3      |  1.25  |  1.50   |   2.00
- D   |  18–21     |  D1      |   D2        |   D3        |  D3      |  1.50  |  2.00   |   2.50
- E   |  22–25     |  E1      |   E2        |   E3        |  E3      |  2.00  |  2.50   |   3.00
- F   |  26–30     |  F1      |   F2        |   F3        |  F3      |  2.50  |  3.00   |   3.50
- G   |  31–35     |  G1      |   G2        |   G3        |  G3      |  3.00  |  3.50   |   4.50
- H   |  36–41     |  H1      |   H2        |   H3        |  H3      |  3.50  |  4.50   |   5.50
- I   |  42–48     |  I1      |   I2        |   I3        |  I3      |  4.50  |  5.50   |   6.50
- J   |  49–57     |  J1      |   J2        |   J3        |  J3      |  5.50  |  6.50   |   7.50
- K   |  58–66     |  K1      |   K2        |   K3        |  K3      |  6.50  |  7.50   |   8.50
- L   |  67–78     |  L1      |   L2        |   L3        |  L3      |  7.50  |  8.50   |  10.00
- M   |  79–94     |  M1      |   M2        |   M3        |  M3      |  8.50  | 10.00   |  12.00
-```
-
-**BSL adjustment (refines DIN within code row):**
-
-| BSL Range | Adjustment to Type I/II/III value |
+| BSL Range | Sub-row |
 |---|---|
-| ≤ 230 mm | Use base value as-is (or subtract 0.25 for smallest BSL values) |
-| 231–270 mm | Use base value |
-| 271–310 mm | Add 0.25–0.5 |
-| > 310 mm | Add 0.5 |
+| ≤ 250 mm | 1 (lowest DIN) |
+| 251–270 mm | 2 |
+| 271–290 mm | 3 |
+| 291–310 mm | 4 |
+| 311–330 mm | 5 |
+| > 330 mm | 6 (highest DIN) |
 
-For the app: the simplified approach is to use the base Type I/II/III values from the code row. For professional-grade precision, the full BSL-adjusted sub-table should be used (see Appendix).
+**Step 4: Read DIN from the lookup table**
 
-### Junior Adjustment (Type J)
+Cross-reference the code + BSL sub-row with the skier type column (Type I / II / III). See Appendix A for the full table.
 
-Apply this rule if: `age <= 12 AND weight <= 30 kg`
+**Step 5: Junior adjustment**
+
+If age ≤ 9: shift one code up (e.g., F → E) before final lookup. This produces a lower, safer DIN setting per ISO 11088.
 
 ```swift
-if age <= 12 && weightKg <= 30 {
-    din = max(0.75, din - 1.0)
+if age <= 9 {
+    adjustedCode = adjustedCode.previous ?? adjustedCode
 }
 ```
 
-This reflects the ISO 11088 recommendation that young children's bindings should be set more conservatively.
+**Step 6: Round and cap**
 
-### DIN Calculation Algorithm (Swift pseudocode)
-
-```swift
-func calculateDIN(
-    weightKg: Int,
-    heightCm: Int,
-    bslMm: Int,
-    age: Int,
-    ability: Ability
-) -> Double {
-
-    // Step 1: Determine base code from weight
-    let baseCode = codeFromWeight(weightKg)
-
-    // Step 2: Adjust code upward if height exceeds threshold for that code
-    let heightAdjustedCode = adjustCodeForHeight(baseCode, heightCm: heightCm)
-
-    // Step 3: Map ability to skier type
-    let skierType = skierType(from: ability)  // .typeI, .typeII, .typeIII
-
-    // Step 4: Look up base DIN from table
-    var din = dinLookup[heightAdjustedCode][skierType]
-
-    // Step 5: BSL fine-tuning (optional enhancement)
-    din = adjustForBSL(din, bslMm: bslMm, code: heightAdjustedCode)
-
-    // Step 6: Junior adjustment
-    if age <= 12 && weightKg <= 30 {
-        din = max(0.75, din - 1.0)
-    }
-
-    // Step 7: Round to nearest 0.25
-    din = (din * 4).rounded() / 4
-
-    return din
-}
-```
+- Round to nearest 0.25
+- Cap at 12.0 (maximum DIN on most bindings)
 
 ### DIN Value Validity Check
 
-Bindings have a range printed on them (e.g., "3–10" or "1–6"). The app should warn:
+Bindings have a range printed on them (e.g., "3–10" or "1–6"). The app warns when DIN > 6.0 for children aged 12 and under:
 
-> "Recommended DIN of [X] is outside the range of many junior bindings ([typical range 0.75–6]). Consult your ski technician about whether your child's bindings can be set to this value."
-
-### Full DIN Reference Table with BSL Sub-Adjustments (Appendix-level detail)
-
-See Appendix A for the complete ISO 11088-derived table with BSL sub-rows. The developer should implement this as a 2D lookup with interpolation disabled (use exact table values, no linear interpolation).
+> "High DIN setting recommended. This should be verified by a certified ski technician. Some junior bindings do not support settings above 6."
 
 ---
 
@@ -407,10 +395,10 @@ Hold pole upside down with the tip pointing up. Grip the pole just below the bas
 
 **Method 2 (formula):**
 ```
-Alpine pole length (cm) = height (cm) × 0.68 to 0.70
+Alpine pole length (cm) = height (cm) × 0.68
 ```
 
-Typical rounding: to nearest 5 cm.
+Rounded to nearest 5 cm.
 
 ```swift
 func alpinePoleLength(heightCm: Int) -> Int {
@@ -436,30 +424,30 @@ func alpinePoleLength(heightCm: Int) -> Int {
 
 **Formula:**
 ```
-XC Classic pole length (cm) = height (cm) × 0.82 to 0.83
+XC Classic pole length (cm) = height (cm) × 0.84
 ```
 
 The tip of the pole, when held normally, should reach the skier's armpit.
 
 ```swift
 func xcClassicPoleLength(heightCm: Int) -> Int {
-    let calculated = Double(heightCm) * 0.83
+    let calculated = Double(heightCm) * 0.84
     return roundToNearestFive(Int(calculated))
 }
 ```
 
 **Example table:**
 
-| Child Height (cm) | Formula Result (× 0.83) | Recommended Pole |
+| Child Height (cm) | Formula Result (× 0.84) | Recommended Pole |
 |---|---|---|
-| 90 | 75 cm | 75 cm |
-| 100 | 83 cm | 85 cm |
-| 110 | 91 cm | 90 cm |
-| 120 | 100 cm | 100 cm |
-| 130 | 108 cm | 110 cm |
-| 140 | 116 cm | 115 cm |
-| 150 | 125 cm | 125 cm |
-| 160 | 133 cm | 135 cm |
+| 90 | 76 cm | 75 cm |
+| 100 | 84 cm | 85 cm |
+| 110 | 92 cm | 90 cm |
+| 120 | 101 cm | 100 cm |
+| 130 | 109 cm | 110 cm |
+| 140 | 118 cm | 120 cm |
+| 150 | 126 cm | 125 cm |
+| 160 | 134 cm | 135 cm |
 
 ### Cross-Country Skate Poles
 
@@ -467,31 +455,31 @@ Skate poles are significantly longer than classic poles to provide leverage for 
 
 **Formula:**
 ```
-XC Skate pole length (cm) = height (cm) × 0.87 to 0.90
+XC Skate pole length (cm) = height (cm) × 0.89
 ```
 
 The tip of the pole should reach between chin and nose when standing.
 
 ```swift
 func xcSkatePoleLength(heightCm: Int) -> Int {
-    let calculated = Double(heightCm) * 0.88
+    let calculated = Double(heightCm) * 0.89
     return roundToNearestFive(Int(calculated))
 }
 ```
 
 **Example table:**
 
-| Child Height (cm) | Formula Result (× 0.88) | Recommended Pole |
+| Child Height (cm) | Formula Result (× 0.89) | Recommended Pole |
 |---|---|---|
-| 100 | 88 cm | 90 cm |
-| 110 | 97 cm | 95 cm |
-| 120 | 106 cm | 105 cm |
-| 130 | 114 cm | 115 cm |
-| 140 | 123 cm | 125 cm |
-| 150 | 132 cm | 130 cm |
-| 160 | 141 cm | 140 cm |
+| 100 | 89 cm | 90 cm |
+| 110 | 98 cm | 100 cm |
+| 120 | 107 cm | 105 cm |
+| 130 | 116 cm | 115 cm |
+| 140 | 125 cm | 125 cm |
+| 150 | 134 cm | 135 cm |
+| 160 | 142 cm | 140 cm |
 
-**Note:** Skate skiing is not typically practiced by children under 7–8. App should surface a note: "Skate skiing poles are suitable for children 7 years and older who have mastered classic technique."
+**Note:** Skate skiing is not typically practiced by children under 8. App surfaces a note: "Skate skiing poles are suitable for children 8 years and older who have mastered classic technique."
 
 ---
 
@@ -534,216 +522,207 @@ Mondo point (MP) is the international standard for ski boot sizing. It represent
 
 | Child Age | Recommended growth room |
 |---|---|
-| Under 6 | 1.5 cm (15mm) |
+| Under 6 | 1.0–1.5 cm |
 | 6–10 | 1.0–1.5 cm |
 | 10–14 | 0.5–1.0 cm |
 | 14+ | 0–0.5 cm (fit closer for performance) |
-
-**App logic:**
-```swift
-func recommendedBootMondoPoint(footLengthCm: Double, age: Int) -> (min: Double, max: Double) {
-    let growth: Double
-    switch age {
-    case ..<6:   growth = 1.5
-    case 6...10: growth = 1.25
-    case 11...13: growth = 0.75
-    default:     growth = 0.5
-    }
-    // Boot shell is typically 0.5–1.0 cm larger than mondo point
-    // So recommended mondo = foot length + growth room - liner thickness offset (~0.5)
-    let recommendedMin = footLengthCm
-    let recommendedMax = footLengthCm + growth
-    return (recommendedMin, recommendedMax)
-}
-```
 
 **Display note in app:**
 > "Ski boots should NOT have the same amount of room as regular shoes. Too much room causes foot movement leading to poor control and blisters. For children, 1–1.5 cm of growth room is appropriate. Never buy boots more than 1.5 cm too large."
 
 ### Alpine Boot Flex Rating for Kids
 
-| Flex Rating | Suitable For |
-|---|---|
-| 50–60 | Beginner children, ages 5–9 |
-| 60–80 | Intermediate children, ages 8–12 |
-| 80–100 | Advanced/teen skiers, ages 12+ |
+The app shows boot flex recommendations in the results view based on age and ability:
 
-Display in app as a recommendation alongside the size.
+| Age | Beginner | Intermediate | Advanced |
+|---|---|---|---|
+| Under 5 | Soft shell | Soft shell | Soft shell |
+| 5–9 | 50–60 | 60–70 | 60–80 |
+| 10–12 | 60–70 | 70–80 | 80–90 |
+| 13+ | 70–80 | 80–100 | 90–110 |
 
 ### Cross-Country Ski Boots
 
 XC boots are sized identically to Mondo point / EU sizing. Key differences:
-- Classic boots: lower cut, flexible; sole compatible with NNN or SNS binding system
+- Classic boots: lower cut, flexible; sole compatible with NNN, Prolink, or Turnamic binding system
 - Skate boots: higher cuff, stiffer; same binding systems
-- Note in app: **NNN and SNS bindings are NOT compatible with each other.** Skis, boots, and bindings must match the same system.
+- Note in app: **NNN (Rottefella), Prolink (Salomon/Atomic), and Turnamic (Fischer) are cross-compatible. Only legacy SNS bindings are NOT compatible with NNN/Prolink/Turnamic.**
 
 **Binding system note to display:**
-> "Make sure your boots and bindings use the same system: NNN (Rottefella) or SNS/Prolink (Salomon). These are NOT interchangeable."
+> "NNN (Rottefella), Prolink (Salomon/Atomic), and Turnamic (Fischer) bindings are cross-compatible. Legacy SNS bindings are NOT compatible with these systems. Check that your boots and bindings use a compatible system."
 
 ---
 
 ## Additional Features
 
-### 1. Child Profiles
+### 1. Child Profiles (Implemented)
 
-- Support saving multiple child profiles (minimum 5 profiles, ideally unlimited with iCloud sync)
-- Profile data: name, date of birth (used to auto-update age), height, weight, boot size (mondo), last updated date
-- Show "Last measured: [date]" on each profile
+- Multiple child profiles stored via SwiftData
+- Profile data: name (optional), height, weight, age, BSL (optional), ability level, ski types, last calculated date, created date
+- Profiles sorted by creation date (newest first)
+- Swipe-to-delete with confirmation alert
+- Tapping a profile shows results immediately (ChildResultsView); "Edit" button pushes the form
 
-### 2. Growth Tracking and Upgrade Alerts
+### 2. Quick Calc (Implemented)
 
-Track measurements over time and alert parents when equipment is likely outgrown.
+- Separate tab for one-off calculations without saving
+- Same input fields as child profiles
+- Results displayed but not persisted
+- "Reset" button to clear all fields
 
-**Alpine ski upgrade trigger:**
-```
-Alert when: current ski length < (current height × abilityMinFactor - 10 cm)
-```
-i.e., when the child has grown enough that their skis are now more than 10 cm too short.
+### 3. Results View Features (Implemented)
 
-**XC ski upgrade trigger:**
-```
-Alert when: current ski length < (current height + minimumOffset - 5 cm)
-```
+The results view displays:
+- **Header**: child name, height/weight/age summary, ability level badge, calculation date
+- **Shop Mode**: full-screen view designed to show to ski shop staff (button in results)
+- **Share**: generates formatted text summary for sharing
+- **Alpine section**: ski length range with visual indicator, DIN card (tappable for details)
+- **Cross-country section**: classic and skate ski lengths with visual indicators
+- **Pole lengths**: alpine, XC classic, XC skate
+- **Equipment guide**: boot flex recommendation (age/ability-based), helmet size estimate (age-based)
+- **Safety disclaimer**: always shown when DIN is calculated
+- **Save Profile button**: only shown for new children (not for existing profiles)
 
-**Boot upgrade trigger:**
-```
-Alert when: foot length > (current boot mondo point + 0.5 cm)
-```
-i.e., the child is within 0.5 cm of outgrowing the boot.
+### 4. Helmet Size Estimates (Implemented)
 
-**Pole upgrade trigger:**
-```
-Alert when: recommended pole length differs from current by more than 5 cm
-```
+The app estimates helmet size in the results view based on age:
 
-**Notification copy examples:**
-- "Sofia may have outgrown her skis! She has grown 8 cm since her last measurement. Tap to see new recommendations."
-- "Time to check Erik's boots — his foot may be approaching the end of the growth room."
-
-### 3. Equipment Checklist
-
-Provide a pre-season checklist for parents. Display as a checklist screen per child.
-
-**Alpine Checklist:**
-
-- [ ] Helmet (certified: EN 1077 or ASTM F2040) — sized to head circumference
-- [ ] Goggles (UV protection, fog-resistant lens)
-- [ ] Ski jacket (waterproof, windproof)
-- [ ] Ski pants (waterproof, reinforced knees)
-- [ ] Gloves or mittens (waterproof, warm)
-- [ ] Ski socks (wool or synthetic, NOT cotton)
-- [ ] Neck gaiter or balaclava
-- [ ] Back protector (recommended for off-piste / racing)
-- [ ] Wrist guards (recommended for beginners)
-- [ ] Skis sized correctly
-- [ ] Boots sized correctly
-- [ ] Bindings DIN set by certified technician
-- [ ] Poles sized correctly
-
-**Cross-Country Checklist:**
-
-- [ ] Helmet (optional but recommended for young children)
-- [ ] Goggles or sunglasses (UV protection)
-- [ ] XC ski jacket (lighter than alpine; wind-resistant)
-- [ ] XC ski pants / tights (stretchy)
-- [ ] Gloves (thinner than alpine; XC-specific)
-- [ ] XC ski socks
-- [ ] Skis sized correctly
-- [ ] Boots (correct binding system: NNN or SNS)
-- [ ] Bindings (matching system)
-- [ ] Poles sized correctly
-- [ ] Kick wax or waxless skis (for classic)
-
-### 4. Helmet Sizing (bonus)
-
-Measure head circumference at the widest point (just above eyebrows and ears).
-
-| Head Circumference (cm) | Helmet Size |
+| Age | Estimated Size |
 |---|---|
-| 44–48 | XXS / Kids XS |
-| 48–52 | XS / Kids S |
-| 52–56 | S / Kids M |
-| 56–59 | M / Kids L |
-| 59–62 | L |
+| ≤ 4 | 48–52 cm (XS) |
+| 5–8 | 52–55.5 cm (S) |
+| 9–12 | 55.5–59 cm (M) |
+| 13+ | 55.5–62 cm (M/L) |
 
-Helmet fit check: "The helmet should sit level, two finger-widths above the eyebrows. The chinstrap should be snug — only one finger should fit between strap and chin."
+Note: This is an estimate. The app advises measuring head circumference for accurate sizing.
 
-### 5. Wax Recommendation (Cross-Country Classic, bonus)
+### 5. Tips & Info Tab (Implemented)
 
-For classic skiing with kick wax, display a simple temperature-based recommendation. Waxless skis eliminate this need.
+Accordion-style reference content covering:
+- How to Measure (height, weight, foot, BSL, head circumference)
+- Alpine Equipment guide
+- Cross-Country Equipment guide
+- Helmet Sizing (with size chart)
+- Boot Fitting (growth room guide, flex ratings)
+- Understanding DIN
+- Kick Wax Guide (temperature-based recommendations)
+- Packing Essentials (interactive checklist with persistent checkmarks)
 
-| Snow Temperature | Recommended Kick Wax Colour (general) |
-|---|---|
-| Above 0°C (wet snow) | Klister (red or silver) |
-| -1 to -3°C | Red hard wax |
-| -3 to -7°C | Violet/purple hard wax |
-| -7 to -12°C | Blue hard wax |
-| Below -12°C | Green hard wax / polar wax |
+### 6. Appearance Setting (Implemented)
 
-Display only if user selects XC Classic. Note: "Wax brands and specific temperatures vary. Always check the wax manufacturer's temperature guide."
+Manual dark/light/system mode toggle accessible from the gear icon on the My Kids tab. See [App Structure](#app-structure) for details.
+
+### Future Features (Not Yet Implemented)
+
+The following features from the original requirements are not yet implemented:
+
+- **Growth tracking and upgrade alerts** — track measurements over time and alert when equipment is outgrown
+- **iCloud sync** — sync profiles across devices
+- **Date of birth** — auto-update age from DOB
+- **Boot sizing calculator** — Mondo point recommendations from foot length
+- **Per-child equipment checklists** — currently only a global checklist in Tips
 
 ---
 
 ## Appendix: Reference Tables
 
-### Appendix A: Full DIN Table with BSL Sub-Rows (ISO 11088-derived)
+### Appendix A: Full DIN Table with BSL Sub-Rows
 
-The following is the detailed table used by certified ski shops. Each code row is split into three sub-rows (1, 2, 3) based on Boot Sole Length. BSL sub-row 1 is the shortest BSL range, sub-row 3 is the longest.
+The app uses a detailed lookup table with 6 BSL sub-rows per code. Each code is determined by weight (with optional height adjustment), and the BSL sub-row refines the DIN value within that code.
 
 ```
-CODE | BSL RANGE  | TYPE I  | TYPE II | TYPE III
------|------------|---------|---------|----------
- A1  | ≤ 230 mm   |  0.75   |  1.00   |   1.50
- A2  | 231–270 mm |  0.75   |  1.00   |   1.50
- A3  | 271–310 mm |  1.00   |  1.25   |   1.75
------|------------|---------|---------|----------
- B1  | ≤ 230 mm   |  1.00   |  1.25   |   1.75
- B2  | 231–270 mm |  1.00   |  1.25   |   1.75
- B3  | 271–310 mm |  1.25   |  1.50   |   2.00
------|------------|---------|---------|----------
- C1  | ≤ 230 mm   |  1.25   |  1.50   |   2.00
- C2  | 231–270 mm |  1.50   |  2.00   |   2.50
- C3  | 271–310 mm |  1.75   |  2.25   |   3.00
------|------------|---------|---------|----------
- D1  | ≤ 230 mm   |  1.50   |  2.00   |   2.50
- D2  | 231–270 mm |  1.75   |  2.25   |   3.00
- D3  | 271–310 mm |  2.00   |  2.50   |   3.50
------|------------|---------|---------|----------
- E1  | ≤ 230 mm   |  2.00   |  2.50   |   3.00
- E2  | 231–270 mm |  2.25   |  3.00   |   3.50
- E3  | 271–310 mm |  2.50   |  3.50   |   4.00
------|------------|---------|---------|----------
- F1  | ≤ 230 mm   |  2.50   |  3.00   |   3.50
- F2  | 231–270 mm |  3.00   |  3.50   |   4.50
- F3  | 271–310 mm |  3.50   |  4.00   |   5.00
------|------------|---------|---------|----------
- G1  | ≤ 230 mm   |  3.00   |  3.50   |   4.50
- G2  | 231–270 mm |  3.50   |  4.00   |   5.00
- G3  | 271–310 mm |  4.00   |  4.50   |   5.50
------|------------|---------|---------|----------
- H1  | ≤ 230 mm   |  3.50   |  4.50   |   5.50
- H2  | 231–270 mm |  4.00   |  5.00   |   6.00
- H3  | 271–310 mm |  4.50   |  5.50   |   6.50
------|------------|---------|---------|----------
- I1  | ≤ 230 mm   |  4.50   |  5.50   |   6.50
- I2  | 231–270 mm |  5.00   |  6.00   |   7.00
- I3  | 271–310 mm |  5.50   |  6.50   |   7.50
------|------------|---------|---------|----------
- J1  | ≤ 230 mm   |  5.50   |  6.50   |   7.50
- J2  | 231–270 mm |  6.00   |  7.00   |   8.00
- J3  | 271–310 mm |  6.50   |  7.50   |   8.50
------|------------|---------|---------|----------
- K1  | ≤ 230 mm   |  6.50   |  7.50   |   8.50
- K2  | 231–270 mm |  7.00   |  8.00   |   9.00
- K3  | 271–310 mm |  7.50   |  8.50   |  10.00
------|------------|---------|---------|----------
- L1  | ≤ 230 mm   |  7.50   |  8.50   |  10.00
- L2  | 231–270 mm |  8.00   |  9.00   |  11.00
- L3  | 271–310 mm |  8.50   |  10.00  |  12.00
------|------------|---------|---------|----------
- M1  | ≤ 230 mm   |  8.50   |  10.00  |  12.00
- M2  | 231–270 mm |  9.00   |  11.00  |  12.00 (max)
- M3  | > 310 mm   |  10.00  |  12.00  |  12.00 (max)
+CODE | BSL RANGE      | TYPE I  | TYPE II | TYPE III
+-----|----------------|---------|---------|----------
+ A   | ≤ 250 mm       |  0.75   |  0.75   |   1.00
+ A   | 251–270 mm     |  0.75   |  0.75   |   1.00
+ A   | 271–290 mm     |  0.75   |  1.00   |   1.25
+ A   | 291–310 mm     |  0.75   |  1.00   |   1.25
+ A   | 311–330 mm     |  0.75   |  1.00   |   1.50
+ A   | > 330 mm       |  0.75   |  1.00   |   1.50
+-----|----------------|---------|---------|----------
+ B   | ≤ 250 mm       |  1.00   |  1.25   |   1.50
+ B   | 251–270 mm     |  1.00   |  1.25   |   1.50
+ B   | 271–290 mm     |  1.00   |  1.50   |   1.75
+ B   | 291–310 mm     |  1.00   |  1.50   |   1.75
+ B   | 311–330 mm     |  1.25   |  1.50   |   2.00
+ B   | > 330 mm       |  1.25   |  1.50   |   2.00
+-----|----------------|---------|---------|----------
+ C   | ≤ 250 mm       |  1.50   |  1.75   |   2.25
+ C   | 251–270 mm     |  1.50   |  1.75   |   2.25
+ C   | 271–290 mm     |  1.50   |  2.00   |   2.50
+ C   | 291–310 mm     |  1.50   |  2.00   |   2.50
+ C   | 311–330 mm     |  1.75   |  2.25   |   3.00
+ C   | > 330 mm       |  1.75   |  2.25   |   3.00
+-----|----------------|---------|---------|----------
+ D   | ≤ 250 mm       |  2.00   |  2.50   |   3.00
+ D   | 251–270 mm     |  2.00   |  2.50   |   3.00
+ D   | 271–290 mm     |  2.00   |  2.75   |   3.50
+ D   | 291–310 mm     |  2.00   |  2.75   |   3.50
+ D   | 311–330 mm     |  2.25   |  3.00   |   3.50
+ D   | > 330 mm       |  2.25   |  3.00   |   3.50
+-----|----------------|---------|---------|----------
+ E   | ≤ 250 mm       |  2.50   |  3.00   |   3.50
+ E   | 251–270 mm     |  2.50   |  3.00   |   3.50
+ E   | 271–290 mm     |  2.75   |  3.50   |   4.00
+ E   | 291–310 mm     |  2.75   |  3.50   |   4.00
+ E   | 311–330 mm     |  3.00   |  3.50   |   4.50
+ E   | > 330 mm       |  3.00   |  3.50   |   4.50
+-----|----------------|---------|---------|----------
+ F   | ≤ 250 mm       |  3.00   |  3.50   |   4.50
+ F   | 251–270 mm     |  3.00   |  3.50   |   4.50
+ F   | 271–290 mm     |  3.50   |  4.00   |   5.00
+ F   | 291–310 mm     |  3.50   |  4.00   |   5.00
+ F   | 311–330 mm     |  3.50   |  4.50   |   5.50
+ F   | > 330 mm       |  3.50   |  4.50   |   5.50
+-----|----------------|---------|---------|----------
+ G   | ≤ 250 mm       |  3.50   |  4.50   |   5.50
+ G   | 251–270 mm     |  3.50   |  4.50   |   5.50
+ G   | 271–290 mm     |  4.00   |  5.00   |   6.00
+ G   | 291–310 mm     |  4.00   |  5.00   |   6.00
+ G   | 311–330 mm     |  4.50   |  5.50   |   6.50
+ G   | > 330 mm       |  4.50   |  5.50   |   6.50
+-----|----------------|---------|---------|----------
+ H   | ≤ 250 mm       |  4.50   |  5.50   |   6.50
+ H   | 251–270 mm     |  4.50   |  5.50   |   6.50
+ H   | 271–290 mm     |  5.00   |  6.00   |   7.50
+ H   | 291–310 mm     |  5.00   |  6.00   |   7.50
+ H   | 311–330 mm     |  5.50   |  6.50   |   8.00
+ H   | > 330 mm       |  5.50   |  6.50   |   8.00
+-----|----------------|---------|---------|----------
+ I   | ≤ 250 mm       |  5.50   |  6.50   |   8.00
+ I   | 251–270 mm     |  5.50   |  6.50   |   8.00
+ I   | 271–290 mm     |  6.00   |  7.50   |   9.00
+ I   | 291–310 mm     |  6.00   |  7.50   |   9.00
+ I   | 311–330 mm     |  6.50   |  8.00   |   9.50
+ I   | > 330 mm       |  6.50   |  8.00   |   9.50
+-----|----------------|---------|---------|----------
+ J   | ≤ 250 mm       |  6.50   |  8.00   |   9.50
+ J   | 251–270 mm     |  6.50   |  8.00   |   9.50
+ J   | 271–290 mm     |  7.50   |  9.00   |  10.50
+ J   | 291–310 mm     |  7.50   |  9.00   |  10.50
+ J   | 311–330 mm     |  8.00   |  9.50   |  11.00
+ J   | > 330 mm       |  8.00   |  9.50   |  11.00
+-----|----------------|---------|---------|----------
+ K   | ≤ 250 mm       |  8.00   |  9.50   |  11.00
+ K   | 251–270 mm     |  8.00   |  9.50   |  11.00
+ K   | 271–290 mm     |  8.50   | 10.00   |  12.00
+ K   | 291–310 mm     |  8.50   | 10.00   |  12.00
+ K   | 311–330 mm     |  9.00   | 11.00   |  12.00
+ K   | > 330 mm       |  9.00   | 11.00   |  12.00
+-----|----------------|---------|---------|----------
+ L   | ≤ 250 mm       |  9.00   | 11.00   |  12.00
+ L   | 251–270 mm     |  9.00   | 11.00   |  12.00
+ L   | 271–290 mm     |  9.50   | 11.00   |  12.00
+ L   | 291–310 mm     |  9.50   | 11.00   |  12.00
+ L   | 311–330 mm     | 10.00   | 12.00   |  12.00
+ L   | > 330 mm       | 10.00   | 12.00   |  12.00
+-----|----------------|---------|---------|----------
+ M   | ≤ 250 mm       | 10.00   | 12.00   |  12.00
+ M   | 251–270 mm     | 10.00   | 12.00   |  12.00
+ M   | 271–290 mm     | 11.00   | 12.00   |  12.00
+ M   | 291–310 mm     | 11.00   | 12.00   |  12.00
+ M   | 311–330 mm     | 12.00   | 12.00   |  12.00
+ M   | > 330 mm       | 12.00   | 12.00   |  12.00
 ```
 
 Notes on the table:
@@ -782,13 +761,13 @@ This table is for illustrative purposes in-app ("ballpark check") only. The full
 
 | Scenario | App Behaviour |
 |---|---|
-| Age ≤ 3 | Show warning: "For children under 3, consult a certified ski school. Sizing varies widely and individual assessment is recommended." |
+| Age ≤ 3 | DIN not calculated. Show warning: "For children under 3, consult a certified ski school. Sizing varies widely and individual assessment is recommended." Alpine ski length uses height – 15 to height – 10 formula. |
 | Weight < 10 kg | DIN code A, apply junior adjustment, show warning about minimum binding DIN capability |
-| BSL not provided | Use estimated BSL from EU shoe size with disclaimer; flag that result is approximate |
-| Skate XC selected for age < 7 | Show warning: "Skate skiing is generally not recommended for children under 7. Classic technique should be learned first." |
-| Advanced level + age ≤ 6 | Show note: "For children 6 and under, we recommend starting at Intermediate sizing even if ability is advanced, to maintain manoeuvrability." |
+| BSL not provided | Use estimated BSL from height (or shoe size if selected) with disclaimer; flag that result is approximate |
+| Skate XC selected for age < 8 | Returns nil (no recommendation). Show warning: "Skate skiing is generally recommended for children 8 and older. Classic technique should be learned first." |
+| Advanced level + age ≤ 6 | Downgrade to Intermediate sizing. Show note: "For children 6 and under, we recommend starting at Intermediate sizing even if ability is advanced, to maintain manoeuvrability." |
 | DIN result > 6.0 for age ≤ 12 | Flag: "High DIN setting recommended. This should be verified by a certified ski technician. Some junior bindings do not support settings above 6." |
-| Ski length recommendation > 200 cm | This would only occur for very tall advanced teenagers; cap display and recommend adult sizing consultation. |
+| Height adjustment overridden for age ≤ 12 | Show: "Height suggests a higher DIN code, but the lower (weight-based) setting was kept for child safety." |
 
 ---
 

@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct ContentView: View {
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
+    @AppStorage("appearanceMode") private var appearanceMode: AppearanceMode = .system
+
     var body: some View {
         TabView {
             HomeView()
@@ -10,7 +13,7 @@ struct ContentView: View {
 
             QuickCalcView()
                 .tabItem {
-                    Label("Quick Calc", systemImage: "slider.horizontal.3")
+                    Label("Quick Calc", systemImage: "bolt.fill")
                 }
 
             TipsView()
@@ -19,7 +22,13 @@ struct ContentView: View {
                 }
         }
         .tint(AppColors.primary)
-        .preferredColorScheme(.light)
+        .preferredColorScheme(appearanceMode.colorScheme)
+        .fullScreenCover(isPresented: Binding(
+            get: { !hasSeenOnboarding },
+            set: { if !$0 { hasSeenOnboarding = true } }
+        )) {
+            OnboardingView(hasSeenOnboarding: $hasSeenOnboarding)
+        }
     }
 }
 
@@ -27,10 +36,10 @@ enum AppColors {
     static let primary = Color(hex: "1A73E8")
     static let secondary = Color(hex: "00897B")
     static let accent = Color(hex: "FF6D00")
-    static let background = Color(hex: "F5F7FA")
-    static let surface = Color.white
-    static let textPrimary = Color(hex: "1A1A2E")
-    static let textSecondary = Color(hex: "6B7280")
+    static let background = Color.adaptive(light: Color(hex: "F5F7FA"), dark: Color(hex: "1A1A2E"))
+    static let surface = Color.adaptive(light: .white, dark: Color(hex: "2A2A3E"))
+    static let textPrimary = Color.adaptive(light: Color(hex: "1A1A2E"), dark: Color(hex: "F0F0F5"))
+    static let textSecondary = Color.adaptive(light: Color(hex: "6B7280"), dark: Color(hex: "9CA3AF"))
     static let warning = Color(hex: "F59E0B")
 }
 
@@ -57,5 +66,11 @@ extension Color {
             blue: Double(b) / 255,
             opacity: Double(a) / 255
         )
+    }
+
+    static func adaptive(light: Color, dark: Color) -> Color {
+        Color(UIColor { traits in
+            traits.userInterfaceStyle == .dark ? UIColor(dark) : UIColor(light)
+        })
     }
 }
