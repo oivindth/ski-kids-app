@@ -53,7 +53,6 @@ struct AppearanceSettingsView: View {
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
-            .preferredColorScheme(resolvedColorScheme)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") { dismiss() }
@@ -62,16 +61,5 @@ struct AppearanceSettingsView: View {
                 }
             }
         }
-    }
-
-    private var resolvedColorScheme: ColorScheme {
-        if let scheme = appearanceMode.colorScheme {
-            return scheme
-        }
-        // System mode: resolve to the actual device appearance for immediate feedback
-        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-            return .light
-        }
-        return scene.traitCollection.userInterfaceStyle == .dark ? .dark : .light
     }
 }

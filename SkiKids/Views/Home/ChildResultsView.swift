@@ -18,8 +18,8 @@ struct ChildResultsView: View {
                         NavigationLink {
                             CalculatorFormView(existingChild: child)
                         } label: {
-                            Text("Edit")
-                                .fontWeight(.semibold)
+                            Image(systemName: "pencil.circle.fill")
+                                .font(.title3)
                                 .foregroundStyle(AppColors.primary)
                         }
                     }

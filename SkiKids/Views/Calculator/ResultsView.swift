@@ -362,9 +362,9 @@ struct ResultsView: View {
 
     private func helmetGuideCard(age: Int) -> some View {
         let sizeGuide: String
-        if age <= 3 { sizeGuide = "48–52 cm (XS)" }
-        else if age <= 7 { sizeGuide = "50–56 cm (XS/S)" }
-        else if age <= 12 { sizeGuide = "54–58 cm (S/M)" }
+        if age <= 2 { sizeGuide = "48–52 cm (XS)" }
+        else if age <= 5 { sizeGuide = "50–56 cm (XS/S)" }
+        else if age <= 10 { sizeGuide = "54–58 cm (S/M)" }
         else { sizeGuide = "56–62 cm (M/L)" }
 
         return RecommendationCard(

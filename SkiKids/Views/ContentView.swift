@@ -22,7 +22,8 @@ struct ContentView: View {
                 }
         }
         .tint(AppColors.primary)
-        .preferredColorScheme(appearanceMode.colorScheme)
+        .onAppear { appearanceMode.apply() }
+        .onChange(of: appearanceMode) { _, newMode in newMode.apply() }
         .fullScreenCover(isPresented: Binding(
             get: { !hasSeenOnboarding },
             set: { if !$0 { hasSeenOnboarding = true } }
