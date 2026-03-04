@@ -26,6 +26,11 @@
 		AA000017 /* SkiCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100017 /* SkiCalculator.swift */; };
 		AA000018 /* DINCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100018 /* DINCalculator.swift */; };
 		AA000019 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA100019 /* Assets.xcassets */; };
+		AA000020 /* SharedFormSections.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100020 /* SharedFormSections.swift */; };
+		AA000021 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100021 /* OnboardingView.swift */; };
+		AA000022 /* ChildResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100022 /* ChildResultsView.swift */; };
+		AA000023 /* AppearanceMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100023 /* AppearanceMode.swift */; };
+		AA000024 /* AppearanceSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100024 /* AppearanceSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +53,11 @@
 		AA100017 /* SkiCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkiCalculator.swift; sourceTree = "<group>"; };
 		AA100018 /* DINCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DINCalculator.swift; sourceTree = "<group>"; };
 		AA100019 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AA100020 /* SharedFormSections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedFormSections.swift; sourceTree = "<group>"; };
+		AA100021 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		AA100022 /* ChildResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildResultsView.swift; sourceTree = "<group>"; };
+		AA100023 /* AppearanceMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceMode.swift; sourceTree = "<group>"; };
+		AA100024 /* AppearanceSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceSettingsView.swift; sourceTree = "<group>"; };
 		AAPROD001 /* SkiKids.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkiKids.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -90,6 +100,9 @@
 			children = (
 				AA100015 /* RecommendationCard.swift */,
 				AA100016 /* SkiLengthVisual.swift */,
+				AA100020 /* SharedFormSections.swift */,
+				AA100021 /* OnboardingView.swift */,
+				AA100024 /* AppearanceSettingsView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -99,6 +112,7 @@
 			children = (
 				AA100008 /* HomeView.swift */,
 				AA100009 /* ChildCardView.swift */,
+				AA100022 /* ChildResultsView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -109,6 +123,7 @@
 				AA100003 /* Child.swift */,
 				AA100004 /* SkiRecommendation.swift */,
 				AA100005 /* DINTable.swift */,
+				AA100023 /* AppearanceMode.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -263,6 +278,11 @@
 				AA000016 /* SkiLengthVisual.swift in Sources */,
 				AA000017 /* SkiCalculator.swift in Sources */,
 				AA000018 /* DINCalculator.swift in Sources */,
+				AA000020 /* SharedFormSections.swift in Sources */,
+				AA000021 /* OnboardingView.swift in Sources */,
+				AA000022 /* ChildResultsView.swift in Sources */,
+				AA000023 /* AppearanceMode.swift in Sources */,
+				AA000024 /* AppearanceSettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

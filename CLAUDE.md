@@ -29,9 +29,9 @@ SkiKids/
 
 - **Navigation:** Tab bar (My Kids / Quick Calc / Tips). HomeView owns the NavigationStack. CalculatorFormView wraps itself in NavigationStack only when presented as a sheet (new child), not when pushed (editing).
 - **DIN calculations are safety-critical.** DINTable.swift contains the full ISO 11088 lookup table. DINCalculator.swift applies weight→code, height adjustment (conservative for children ≤12), BSL lookup, junior adjustment, and skier type. Always display the safety disclaimer.
-- **BSL estimation fallback:** BSL → EU shoe size → height-based estimate (height × 0.65). The estimation method is tracked and shown in warnings.
-- **Ski length rounding:** All ski lengths round to nearest 5cm via `SkiCalculator.roundToNearestFive`.
-- **Age guards:** Skate XC returns nil for age < 7. Alpine ages ≤3 use height-based formula. Ages 4-6 beginner override uses height × 0.80.
+- **BSL estimation fallback:** BSL → EU shoe size → height-based lookup table. The estimation method is tracked and shown in warnings.
+- **Ski length rounding:** All ski lengths round to nearest 5cm via `SkiCalculator.roundToNearestFive` (accepts both Double and Int).
+- **Age guards:** Skate XC returns nil for age < 8. Alpine ages ≤3 use height-based formula. Ages 4-6 beginner override uses height × 0.80.
 
 ## Conventions
 
@@ -43,6 +43,6 @@ SkiKids/
 ## Testing DIN Values
 
 When modifying DIN calculations, verify against the ISO 11088 table in REQUIREMENTS.md Appendix A. Key test cases:
-- Child 28kg, 130cm, beginner → Code F, Type I
-- Junior adjustment: age ≤12 AND weight ≤30kg → subtract 1.0 (min 0.75)
+- Child 25kg, 130cm, age 8, beginner → Code D, junior adjusted to Code C
+- Junior adjustment: age ≤9 → shift one code up (lower/safer), per ISO 11088
 - Height adjustment: for children ≤12, keep the weight-based (lower) code

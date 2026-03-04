@@ -165,7 +165,7 @@ struct TipsAccordion: View {
             TipText("Height: Measure without shoes, standing straight against a wall.")
             TipText("Weight: Use a home scale without clothing for accuracy.")
             TipText("Foot length (for boot sizing): Place foot on paper with heel against a wall. Mark the longest toe. Measure heel to mark in centimeters — this is your Mondo Point size.")
-            TipText("Boot Sole Length (BSL): Found printed inside the ski boot. Needed for accurate DIN calculation. Cannot be estimated reliably.")
+            TipText("Boot Sole Length (BSL): Found printed inside the ski boot. For best accuracy, read the BSL directly from inside the boot. The app can estimate from shoe size or height, but actual BSL gives the most precise DIN result.")
             TipText("Head circumference (for helmets): Measure around the widest part of the head, just above the eyebrows and ears.")
         }
     }
@@ -184,8 +184,8 @@ struct TipsAccordion: View {
     private var xcContent: some View {
         VStack(alignment: .leading, spacing: 12) {
             TipText("Classic skis are longer and have a grip (kick) zone in the middle for pushing off.")
-            TipText("Skate skis are shorter and have no kick zone — suitable for children 7+ who have mastered classic technique.")
-            TipText("NNN and SNS/Prolink binding systems are NOT compatible. Ensure boots and bindings match the same system.")
+            TipText("Skate skis are shorter and have no kick zone — suitable for children 8+ who have mastered classic technique.")
+            TipText("NNN (Rottefella), Prolink (Salomon/Atomic), and Turnamic (Fischer) bindings are cross-compatible — boots from any of these systems work together. Only legacy SNS bindings are NOT compatible with NNN/Prolink/Turnamic.")
             TipText("Waxable classic skis need kick wax applied based on snow temperature.")
             TipText("Waxless (fishscale) skis require no kick wax — ideal for beginners and recreational skiers.")
         }
@@ -202,10 +202,9 @@ struct TipsAccordion: View {
                     .foregroundStyle(AppColors.textPrimary)
 
                 let sizes: [(String, String)] = [
-                    ("44–48 cm", "XXS / Kids XS"),
                     ("48–52 cm", "XS / Kids S"),
-                    ("52–56 cm", "S / Kids M"),
-                    ("56–59 cm", "M / Kids L"),
+                    ("52–55.5 cm", "S / Kids M"),
+                    ("55.5–59 cm", "M / Kids L"),
                     ("59–62 cm", "L"),
                 ]
                 ForEach(sizes, id: \.0) { size in
@@ -222,6 +221,9 @@ struct TipsAccordion: View {
                 }
             }
 
+            TipText("For head circumferences under 48 cm (typically toddlers), look for infant/toddler-specific helmets from specialty brands.")
+            TipText("NEVER buy a helmet with room to grow. A loose helmet will not protect properly in a crash. It should fit snugly with no wobble.")
+            TipText("Sizes vary between brands. Always check the specific manufacturer's size chart and try the helmet on before purchasing.")
             TipText("Fit check: Helmet should sit level, two finger-widths above the eyebrows. Chinstrap should be snug — only one finger should fit between strap and chin.")
             TipText("Look for certification: EN 1077 (Europe) or ASTM F2040 (USA).")
         }
@@ -239,7 +241,7 @@ struct TipsAccordion: View {
                     .foregroundStyle(AppColors.textPrimary)
 
                 let guide: [(String, String)] = [
-                    ("Under 6", "1.5 cm"),
+                    ("Under 6", "1.0–1.5 cm"),
                     ("6–10 years", "1.0–1.5 cm"),
                     ("10–14 years", "0.5–1.0 cm"),
                     ("14+", "0–0.5 cm"),
@@ -282,6 +284,8 @@ struct TipsAccordion: View {
                     }
                 }
             }
+
+            TipText("Children ages 2–4 typically use soft-shell boots without a standard flex rating. Look for the softest option available in their size.")
         }
     }
 
@@ -290,7 +294,7 @@ struct TipsAccordion: View {
             TipText("DIN is the release force setting on alpine ski bindings. It controls how easily the binding releases in a fall.")
             TipText("Too low: Skis release during normal skiing. Too high: Skis don't release in a dangerous fall — injury risk.")
             TipText("Type I (Beginner): Prefers early release. Type II (Intermediate): Balanced. Type III (Advanced): Prefers retention.")
-            TipText("Junior adjustment: Children aged 12 and under with weight ≤ 30 kg get a -1.0 adjustment for safety.")
+            TipText("Junior adjustment: Children aged 9 and under receive a one-code reduction in their DIN setting for added safety, per ISO 11088.")
             TipText("ALWAYS have bindings professionally set by a certified ski technician. Do not set DIN yourself based on app recommendations alone.")
         }
     }
@@ -306,11 +310,12 @@ struct TipsAccordion: View {
                     .foregroundStyle(AppColors.textPrimary)
 
                 let waxGuide: [(String, String, Color)] = [
-                    ("Above 0°C", "Klister (red/silver)", .red),
-                    ("-1 to -3°C", "Red hard wax", .red),
-                    ("-3 to -7°C", "Violet/purple hard wax", .purple),
-                    ("-7 to -12°C", "Blue hard wax", AppColors.primary),
-                    ("Below -12°C", "Green/polar wax", AppColors.secondary),
+                    ("Above 0°C, old/icy snow", "Klister (red/universal)", .red),
+                    ("0°C to +3°C, fresh snow", "Red/silver hard wax", Color(hex: "E53935")),
+                    ("-1°C to -3°C", "Violet hard wax", .purple),
+                    ("-3°C to -10°C", "Blue hard wax", AppColors.primary),
+                    ("-10°C to -20°C", "Green hard wax", AppColors.secondary),
+                    ("Below -20°C", "Polar wax (white/green)", Color(hex: "00897B")),
                 ]
                 ForEach(waxGuide, id: \.0) { row in
                     HStack(spacing: 8) {
@@ -320,7 +325,7 @@ struct TipsAccordion: View {
                         Text(row.0)
                             .font(.caption)
                             .foregroundStyle(AppColors.textSecondary)
-                            .frame(width: 90, alignment: .leading)
+                            .frame(width: 140, alignment: .leading)
                         Text(row.1)
                             .font(.caption)
                             .foregroundStyle(AppColors.textPrimary)
@@ -328,9 +333,21 @@ struct TipsAccordion: View {
                 }
             }
 
+            TipText("Snow condition matters as much as temperature. Fresh snow generally uses harder (higher temperature) wax; old, transformed, or icy snow may need softer wax or klister.")
             TipText("Always check the wax manufacturer's specific temperature guide. Wax brands vary in their optimal temperature ranges.")
         }
     }
+
+    private let checklistKeys: [String] = [
+        "checklist_helmet",
+        "checklist_goggles",
+        "checklist_socks",
+        "checklist_neck_gaiter",
+        "checklist_din_checked",
+        "checklist_xc_gloves",
+        "checklist_xc_boots",
+        "checklist_xc_wax",
+    ]
 
     private var checklistContent: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -339,14 +356,23 @@ struct TipsAccordion: View {
                 .foregroundStyle(AppColors.textSecondary)
                 .padding(.bottom, 4)
 
-            ChecklistItem(text: "Helmet (mandatory at most resorts)")
-            ChecklistItem(text: "Goggles or sunglasses (UV protection)")
-            ChecklistItem(text: "Ski socks — wool or synthetic, never cotton")
-            ChecklistItem(text: "Neck gaiter or balaclava")
-            ChecklistTagItem(text: "Bindings DIN checked this season", tag: "Alpine", tagColor: AppColors.primary)
-            ChecklistTagItem(text: "Lighter XC-specific gloves", tag: "XC", tagColor: AppColors.secondary)
-            ChecklistTagItem(text: "Boots match binding system (NNN/Prolink)", tag: "XC", tagColor: AppColors.secondary)
-            ChecklistTagItem(text: "Kick wax, or confirm skis are waxless", tag: "XC", tagColor: AppColors.secondary)
+            ChecklistItem(text: "Helmet (mandatory at most resorts)", storageKey: "checklist_helmet")
+            ChecklistItem(text: "Goggles or sunglasses (UV protection)", storageKey: "checklist_goggles")
+            ChecklistItem(text: "Ski socks — wool or synthetic, never cotton", storageKey: "checklist_socks")
+            ChecklistItem(text: "Neck gaiter or balaclava", storageKey: "checklist_neck_gaiter")
+            ChecklistTagItem(text: "Bindings DIN checked this season", tag: "Alpine", tagColor: AppColors.primary, storageKey: "checklist_din_checked")
+            ChecklistTagItem(text: "Lighter XC-specific gloves", tag: "XC", tagColor: AppColors.secondary, storageKey: "checklist_xc_gloves")
+            ChecklistTagItem(text: "Boots match binding system (NNN/Prolink)", tag: "XC", tagColor: AppColors.secondary, storageKey: "checklist_xc_boots")
+            ChecklistTagItem(text: "Kick wax, or confirm skis are waxless", tag: "XC", tagColor: AppColors.secondary, storageKey: "checklist_xc_wax")
+
+            Button("Reset Checklist") {
+                for key in checklistKeys {
+                    UserDefaults.standard.removeObject(forKey: key)
+                }
+            }
+            .font(.caption)
+            .foregroundStyle(AppColors.textSecondary)
+            .padding(.top, 4)
         }
     }
 }
@@ -376,7 +402,16 @@ struct ChecklistTagItem: View {
     let text: String
     let tag: String
     let tagColor: Color
-    @State private var isChecked = false
+    let storageKey: String
+    @AppStorage private var isChecked: Bool
+
+    init(text: String, tag: String, tagColor: Color, storageKey: String) {
+        self.text = text
+        self.tag = tag
+        self.tagColor = tagColor
+        self.storageKey = storageKey
+        self._isChecked = AppStorage(wrappedValue: false, storageKey)
+    }
 
     var body: some View {
         Button {
@@ -406,12 +441,22 @@ struct ChecklistTagItem: View {
             }
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(text)
+        .accessibilityValue(isChecked ? "Checked" : "Unchecked")
+        .accessibilityAddTraits(.isToggle)
     }
 }
 
 struct ChecklistItem: View {
     let text: String
-    @State private var isChecked = false
+    let storageKey: String
+    @AppStorage private var isChecked: Bool
+
+    init(text: String, storageKey: String) {
+        self.text = text
+        self.storageKey = storageKey
+        self._isChecked = AppStorage(wrappedValue: false, storageKey)
+    }
 
     var body: some View {
         Button {
@@ -430,5 +475,8 @@ struct ChecklistItem: View {
             }
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(text)
+        .accessibilityValue(isChecked ? "Checked" : "Unchecked")
+        .accessibilityAddTraits(.isToggle)
     }
 }

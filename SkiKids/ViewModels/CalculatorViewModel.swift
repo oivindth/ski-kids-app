@@ -3,19 +3,51 @@ import Observation
 
 @Observable
 final class CalculatorViewModel {
+    enum BSLInputMode: String, CaseIterable {
+        case estimate = "Estimate"
+        case shoeSize = "Shoe Size"
+        case bsl = "BSL"
+    }
+
     var name: String = ""
     var heightCm: Int = 120
     var weightKg: Int = 25
     var age: Int = 8
     var bslMm: Int = 230
-    var hasBSL: Bool = false
+    var bslInputMode: BSLInputMode = .estimate
     var shoeSize: Int = 32
-    var hasShoeSize: Bool = false
     var abilityLevel: AbilityLevel = .beginner
     var selectedSkiTypes: Set<SkiType> = [.alpine]
 
     var recommendation: SkiRecommendation?
-    var showingResults: Bool = false
+    var hasAttemptedCalculation: Bool = false
+
+    var heightError: String? {
+        if heightCm < 60 || heightCm > 200 { return "Height must be 60–200 cm" }
+        return nil
+    }
+
+    var weightError: String? {
+        if weightKg < 8 || weightKg > 80 { return "Weight must be 8–80 kg" }
+        return nil
+    }
+
+    var ageError: String? {
+        if age < 2 || age > 17 { return "Age must be 2–17 years" }
+        return nil
+    }
+
+    var bslError: String? {
+        if bslInputMode == .bsl && (bslMm < 150 || bslMm > 330) {
+            return "Boot sole length must be 150–330 mm"
+        }
+        return nil
+    }
+
+    var skiTypeError: String? {
+        if selectedSkiTypes.isEmpty { return "Select at least one ski type" }
+        return nil
+    }
 
     var validationErrors: [String] {
         var errors: [String] = []
@@ -28,7 +60,7 @@ final class CalculatorViewModel {
         if age < 2 || age > 17 {
             errors.append("Age must be between 2 and 17 years.")
         }
-        if hasBSL && (bslMm < 150 || bslMm > 330) {
+        if bslInputMode == .bsl && (bslMm < 150 || bslMm > 330) {
             errors.append("Boot sole length must be between 150 and 330 mm.")
         }
         if selectedSkiTypes.isEmpty {
@@ -40,17 +72,18 @@ final class CalculatorViewModel {
     var isValid: Bool { validationErrors.isEmpty }
 
     func calculate() {
+        hasAttemptedCalculation = true
         guard isValid else { return }
 
         let effectiveBSL: Int
         var bslEstimationMethod: String? = nil
-        if hasBSL {
+        if bslInputMode == .bsl {
             effectiveBSL = bslMm
-        } else if hasShoeSize {
+        } else if bslInputMode == .shoeSize {
             effectiveBSL = SkiCalculator.estimatedBSL(fromEUSize: shoeSize)
             bslEstimationMethod = "shoe size (EU \(shoeSize))"
         } else {
-            effectiveBSL = Int(Double(heightCm) * 0.65)
+            effectiveBSL = SkiCalculator.estimatedBSLFromHeight(heightCm: heightCm)
             bslEstimationMethod = "height (\(heightCm) cm)"
         }
 
@@ -100,11 +133,11 @@ final class CalculatorViewModel {
             ? SkiCalculator.xcClassicPoleLength(heightCm: heightCm)
             : nil
 
-        let xcSkatePole: Int? = skiTypesArray.contains(.xcSkate)
+        let xcSkatePole: Int? = (skiTypesArray.contains(.xcSkate) && xcSkateLength != nil)
             ? SkiCalculator.xcSkatePoleLength(heightCm: heightCm)
             : nil
 
-        if !hasBSL && skiTypesArray.contains(.alpine) {
+        if bslInputMode != .bsl && skiTypesArray.contains(.alpine) {
             if let method = bslEstimationMethod {
                 globalWarnings.insert("Boot sole length not provided. BSL was estimated from \(method). Provide the actual Boot Sole Length (printed inside the boot) for accurate DIN results.", at: 0)
             }
@@ -133,8 +166,6 @@ final class CalculatorViewModel {
             },
             calculatedAt: Date()
         )
-
-        showingResults = true
     }
 
     func populate(from child: Child) {
@@ -144,12 +175,11 @@ final class CalculatorViewModel {
         age = child.age
         if let bsl = child.bslMm {
             bslMm = bsl
-            hasBSL = true
+            bslInputMode = .bsl
         } else {
-            hasBSL = false
+            bslInputMode = .estimate
         }
         shoeSize = 32
-        hasShoeSize = false
         abilityLevel = child.abilityLevel
         selectedSkiTypes = Set(child.skiTypes)
     }
@@ -160,12 +190,11 @@ final class CalculatorViewModel {
         weightKg = 25
         age = 8
         bslMm = 230
-        hasBSL = false
+        bslInputMode = .estimate
         shoeSize = 32
-        hasShoeSize = false
         abilityLevel = .beginner
         selectedSkiTypes = [.alpine]
         recommendation = nil
-        showingResults = false
+        hasAttemptedCalculation = false
     }
 }

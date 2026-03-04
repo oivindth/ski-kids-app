@@ -8,7 +8,7 @@ struct DINCalculator {
                 return code
             }
         }
-        return .M
+        return .A
     }
 
     static func adjustCodeForHeight(_ code: DINCode, heightCm: Int) -> DINCode {
@@ -41,11 +41,18 @@ struct DINCalculator {
 
         var dinValue = DINTable.lookup(code: adjustedCode, bsl: bslMm, ability: ability)
 
-        let isJuniorAdjusted = age <= 12 && weightKg <= 30
+        var isJuniorAdjusted = false
+        var lookupCode = adjustedCode
 
-        if isJuniorAdjusted {
-            dinValue = max(0.75, dinValue - 1.0)
+        if age <= 9 {
+            if let previousCode = adjustedCode.previous {
+                lookupCode = previousCode
+                dinValue = DINTable.lookup(code: lookupCode, bsl: bslMm, ability: ability)
+                isJuniorAdjusted = true
+            }
         }
+
+        dinValue = min(dinValue, 12.0)
 
         dinValue = (dinValue * 4).rounded() / 4
 
@@ -64,9 +71,13 @@ struct DINCalculator {
             warnings.append("Very low weight detected. Verify minimum binding DIN capability with your ski technician.")
         }
 
+        if isJuniorAdjusted {
+            warnings.append("Junior safety adjustment applied: DIN code shifted from \(adjustedCode.rawValue) to \(lookupCode.rawValue) for children aged 9 and under (per ISO 11088).")
+        }
+
         return DINResult(
             value: dinValue,
-            code: adjustedCode.rawValue,
+            code: lookupCode.rawValue,
             skierType: skierType,
             isJuniorAdjusted: isJuniorAdjusted,
             warnings: warnings
@@ -80,8 +91,8 @@ struct DINCalculator {
             warnings.append("For children under 3, consult a certified ski school. Sizing varies widely and individual assessment is recommended.")
         }
 
-        if child.skiTypes.contains(.xcSkate) && child.age < 7 {
-            warnings.append("Skate skiing is generally not recommended for children under 7. Classic technique should be learned first.")
+        if child.skiTypes.contains(.xcSkate) && child.age < 8 {
+            warnings.append("Skate skiing is generally recommended for children 8 and older. Classic technique should be learned first.")
         }
 
         if child.ability == .advanced && child.age <= 6 {

@@ -7,6 +7,9 @@ struct HomeView: View {
     @State private var viewModel = ChildViewModel()
     @State private var showingAddChild = false
     @State private var selectedChild: Child?
+    @State private var childToDelete: Child?
+    @State private var showingDeleteAlert = false
+    @State private var showingSettings = false
 
     var body: some View {
         NavigationStack {
@@ -16,26 +19,55 @@ struct HomeView: View {
                 if children.isEmpty {
                     emptyStateView
                 } else {
-                    ScrollView {
-                        LazyVStack(spacing: 16) {
-                            ForEach(children) { child in
-                                NavigationLink(destination: childDestination(for: child)) {
-                                    ChildCardView(child: child) {
-                                        viewModel.deleteChild(child, from: modelContext)
-                                    }
+                    List {
+                        ForEach(children) { child in
+                            NavigationLink(destination: childDestination(for: child)) {
+                                ChildCardView(child: child) {
+                                    viewModel.deleteChild(child, from: modelContext)
                                 }
-                                .buttonStyle(.plain)
+                            }
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                Button(role: .destructive) {
+                                    childToDelete = child
+                                    showingDeleteAlert = true
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
                             }
                         }
-                        .padding(.horizontal, 16)
-                        .padding(.top, 8)
-                        .padding(.bottom, 24)
                     }
+                    .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
+                }
+            }
+            .alert("Delete profile?", isPresented: $showingDeleteAlert) {
+                Button("Cancel", role: .cancel) {}
+                Button("Delete", role: .destructive) {
+                    if let child = childToDelete {
+                        viewModel.deleteChild(child, from: modelContext)
+                        childToDelete = nil
+                    }
+                }
+            } message: {
+                if let child = childToDelete {
+                    Text("This will permanently remove \(child.name.isEmpty ? "this profile" : child.name) and all saved measurements.")
                 }
             }
             .navigationTitle("My Kids")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        showingSettings = true
+                    } label: {
+                        Image(systemName: "gearshape.fill")
+                            .font(.body)
+                            .foregroundStyle(AppColors.textSecondary)
+                    }
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         showingAddChild = true
@@ -49,12 +81,15 @@ struct HomeView: View {
             .sheet(isPresented: $showingAddChild) {
                 CalculatorFormView(existingChild: nil)
             }
+            .sheet(isPresented: $showingSettings) {
+                AppearanceSettingsView()
+            }
         }
     }
 
     @ViewBuilder
     private func childDestination(for child: Child) -> some View {
-        CalculatorFormView(existingChild: child)
+        ChildResultsView(child: child)
     }
 
     private var emptyStateView: some View {
