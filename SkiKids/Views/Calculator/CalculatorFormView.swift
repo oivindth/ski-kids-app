@@ -255,6 +255,7 @@ struct StepperRow: View {
 
             HStack(spacing: 8) {
                 Button {
+                    if isEditing { commitEdit() }
                     if value - step >= range.lowerBound {
                         value -= step
                     }
@@ -282,6 +283,13 @@ struct StepperRow: View {
                         .onChange(of: textFieldFocused) { _, focused in
                             if !focused { commitEdit() }
                         }
+                        .toolbar {
+                            ToolbarItemGroup(placement: .keyboard) {
+                                Spacer()
+                                Button("Done") { commitEdit() }
+                                    .fontWeight(.semibold)
+                            }
+                        }
                 } else {
                     Text("\(value)")
                         .font(.system(.body, design: .rounded, weight: .bold))
@@ -304,6 +312,7 @@ struct StepperRow: View {
                     .frame(width: 28, alignment: .leading)
 
                 Button {
+                    if isEditing { commitEdit() }
                     if value + step <= range.upperBound {
                         value += step
                     }

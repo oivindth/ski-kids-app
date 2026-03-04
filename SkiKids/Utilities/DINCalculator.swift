@@ -48,8 +48,8 @@ struct DINCalculator {
             if let previousCode = adjustedCode.previous {
                 lookupCode = previousCode
                 dinValue = DINTable.lookup(code: lookupCode, bsl: bslMm, ability: ability)
-                isJuniorAdjusted = true
             }
+            isJuniorAdjusted = true
         }
 
         dinValue = min(dinValue, 12.0)
