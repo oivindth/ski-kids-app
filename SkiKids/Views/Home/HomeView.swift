@@ -21,7 +21,12 @@ struct HomeView: View {
                 } else {
                     List {
                         ForEach(children) { child in
-                            NavigationLink(destination: childDestination(for: child)) {
+                            ZStack {
+                                NavigationLink(destination: childDestination(for: child)) {
+                                    EmptyView()
+                                }
+                                .opacity(0)
+
                                 ChildCardView(child: child) {
                                     viewModel.deleteChild(child, from: modelContext)
                                 }
