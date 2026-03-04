@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 enum AppearanceMode: Int, CaseIterable {
     case system = 0
@@ -21,11 +22,18 @@ enum AppearanceMode: Int, CaseIterable {
         }
     }
 
-    var colorScheme: ColorScheme? {
+    var uiInterfaceStyle: UIUserInterfaceStyle {
         switch self {
-        case .system: return nil
+        case .system: return .unspecified
         case .light: return .light
         case .dark: return .dark
+        }
+    }
+
+    func apply() {
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
+        for window in scene.windows {
+            window.overrideUserInterfaceStyle = uiInterfaceStyle
         }
     }
 }

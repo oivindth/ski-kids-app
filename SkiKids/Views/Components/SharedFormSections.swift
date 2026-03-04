@@ -16,7 +16,7 @@ struct MeasurementsFormSection: View {
                         label: "Height",
                         value: $heightCm,
                         unit: "cm",
-                        range: 60...200,
+                        range: 60...210,
                         step: 1
                     )
                     if let error = heightError {
@@ -34,7 +34,7 @@ struct MeasurementsFormSection: View {
                         label: "Weight",
                         value: $weightKg,
                         unit: "kg",
-                        range: 8...80,
+                        range: 8...120,
                         step: 1
                     )
                     if let error = weightError {
@@ -52,7 +52,7 @@ struct MeasurementsFormSection: View {
                         label: "Age",
                         value: $age,
                         unit: "years",
-                        range: 2...17,
+                        range: 2...99,
                         step: 1
                     )
                     if let error = ageError {
@@ -137,7 +137,7 @@ struct BSLFormSection: View {
 
                 switch bslInputMode {
                 case .bsl:
-                    StepperRow(label: "Boot Sole Length", value: $bslMm, unit: "mm", range: 150...330, step: 5, icon: "shoe.fill", iconColor: Color(hex: "795548"))
+                    StepperRow(label: "Boot Sole Length", value: $bslMm, unit: "mm", range: 150...380, step: 5, icon: "shoe.fill", iconColor: Color(hex: "795548"))
                     if let error = bslError {
                         Text(error)
                             .font(.caption2)
@@ -148,7 +148,7 @@ struct BSLFormSection: View {
                         .font(.caption)
                         .foregroundStyle(AppColors.textSecondary)
                 case .shoeSize:
-                    StepperRow(label: "EU Shoe Size", value: $shoeSize, unit: "EU", range: 15...45, step: 1, icon: "shoe.fill", iconColor: Color(hex: "795548"))
+                    StepperRow(label: "EU Shoe Size", value: $shoeSize, unit: "EU", range: 15...50, step: 1, icon: "shoe.fill", iconColor: Color(hex: "795548"))
                     Text("Used to estimate boot sole length")
                         .font(.caption)
                         .foregroundStyle(AppColors.textSecondary)

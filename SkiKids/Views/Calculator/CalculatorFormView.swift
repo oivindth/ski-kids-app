@@ -41,7 +41,9 @@ struct CalculatorFormView: View {
                     abilitySection
                     skiTypeSection
                     bslSection
-                    calculateButton
+                    if !isEditing {
+                        calculateButton
+                    }
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 12)
@@ -129,12 +131,6 @@ struct CalculatorFormView: View {
         Button {
             viewModel.calculate()
             if viewModel.isValid {
-                if isEditing {
-                    saveProfileWithoutDismiss()
-                }
-                if let child = existingChild {
-                    childViewModel.updateLastCalculated(for: child, context: modelContext)
-                }
                 showingResults = true
             }
         } label: {
@@ -181,10 +177,6 @@ struct CalculatorFormView: View {
 
     private func saveProfile() {
         performSave(child: existingChild)
-    }
-
-    private func saveProfileWithoutDismiss() {
-        performSave(child: existingChild, shouldDismiss: false)
     }
 
     private func saveFromResults() {
@@ -263,6 +255,7 @@ struct StepperRow: View {
 
             HStack(spacing: 8) {
                 Button {
+                    if isEditing { commitEdit() }
                     if value - step >= range.lowerBound {
                         value -= step
                     }
@@ -290,6 +283,13 @@ struct StepperRow: View {
                         .onChange(of: textFieldFocused) { _, focused in
                             if !focused { commitEdit() }
                         }
+                        .toolbar {
+                            ToolbarItemGroup(placement: .keyboard) {
+                                Spacer()
+                                Button("Done") { commitEdit() }
+                                    .fontWeight(.semibold)
+                            }
+                        }
                 } else {
                     Text("\(value)")
                         .font(.system(.body, design: .rounded, weight: .bold))
@@ -312,6 +312,7 @@ struct StepperRow: View {
                     .frame(width: 28, alignment: .leading)
 
                 Button {
+                    if isEditing { commitEdit() }
                     if value + step <= range.upperBound {
                         value += step
                     }

@@ -31,23 +31,23 @@ final class CalculatorViewModel {
     var hasAttemptedCalculation: Bool = false
 
     var heightError: String? {
-        if heightCm < 60 || heightCm > 200 { return "Height must be 60–200 cm" }
+        if heightCm < 60 || heightCm > 210 { return "Height must be 60–210 cm" }
         return nil
     }
 
     var weightError: String? {
-        if weightKg < 8 || weightKg > 80 { return "Weight must be 8–80 kg" }
+        if weightKg < 8 || weightKg > 120 { return "Weight must be 8–120 kg" }
         return nil
     }
 
     var ageError: String? {
-        if age < 2 || age > 17 { return "Age must be 2–17 years" }
+        if age < 2 || age > 99 { return "Age must be 2–99 years" }
         return nil
     }
 
     var bslError: String? {
-        if bslInputMode == .bsl && (bslMm < 150 || bslMm > 330) {
-            return "Boot sole length must be 150–330 mm"
+        if bslInputMode == .bsl && (bslMm < 150 || bslMm > 380) {
+            return "Boot sole length must be 150–380 mm"
         }
         return nil
     }
@@ -59,17 +59,17 @@ final class CalculatorViewModel {
 
     var validationErrors: [String] {
         var errors: [String] = []
-        if heightCm < 60 || heightCm > 200 {
-            errors.append("Height must be between 60 and 200 cm.")
+        if heightCm < 60 || heightCm > 210 {
+            errors.append("Height must be between 60 and 210 cm.")
         }
-        if weightKg < 8 || weightKg > 80 {
-            errors.append("Weight must be between 8 and 80 kg.")
+        if weightKg < 8 || weightKg > 120 {
+            errors.append("Weight must be between 8 and 120 kg.")
         }
-        if age < 2 || age > 17 {
-            errors.append("Age must be between 2 and 17 years.")
+        if age < 2 || age > 99 {
+            errors.append("Age must be between 2 and 99 years.")
         }
-        if bslInputMode == .bsl && (bslMm < 150 || bslMm > 330) {
-            errors.append("Boot sole length must be between 150 and 330 mm.")
+        if bslInputMode == .bsl && (bslMm < 150 || bslMm > 380) {
+            errors.append("Boot sole length must be between 150 and 380 mm.")
         }
         if selectedSkiTypes.isEmpty {
             errors.append("Select at least one ski type.")

@@ -117,7 +117,7 @@ struct DINDetailView: View {
                 DINStepRow(step: "2", title: "Height Adjustment", detail: "Height was checked against code thresholds to ensure safe release")
                 DINStepRow(step: "3", title: "Skier Type", detail: "\(dinResult.skierType) — based on ability level")
                 if dinResult.isJuniorAdjusted {
-                    DINStepRow(step: "4", title: "Junior Adjustment", detail: "DIN code shifted one level lower for children aged 9 and under, per ISO 11088")
+                    DINStepRow(step: "4", title: "Junior Safety Adjustment", detail: "Per ISO 11088, children aged 9 and under receive a one-level lower DIN code. This makes bindings release more easily, reducing injury risk for younger skiers whose bones and joints are still developing. If the child is already at the lowest code (A), the lowest available DIN value is used.")
                 }
                 DINStepRow(step: dinResult.isJuniorAdjusted ? "5" : "4", title: "Round to 0.25", detail: "Final value rounded to nearest 0.25 increment")
             }

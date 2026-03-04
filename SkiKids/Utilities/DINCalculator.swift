@@ -48,8 +48,8 @@ struct DINCalculator {
             if let previousCode = adjustedCode.previous {
                 lookupCode = previousCode
                 dinValue = DINTable.lookup(code: lookupCode, bsl: bslMm, ability: ability)
-                isJuniorAdjusted = true
             }
+            isJuniorAdjusted = true
         }
 
         dinValue = min(dinValue, 12.0)
@@ -71,9 +71,7 @@ struct DINCalculator {
             warnings.append("Very low weight detected. Verify minimum binding DIN capability with your ski technician.")
         }
 
-        if isJuniorAdjusted {
-            warnings.append("Junior safety adjustment applied: DIN code shifted from \(adjustedCode.rawValue) to \(lookupCode.rawValue) for children aged 9 and under (per ISO 11088).")
-        }
+        // Junior adjustment info is shown in the DIN detail view, not in the main warnings list
 
         return DINResult(
             value: dinValue,
