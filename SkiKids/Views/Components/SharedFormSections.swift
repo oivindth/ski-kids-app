@@ -129,7 +129,7 @@ struct BSLFormSection: View {
             VStack(alignment: .leading, spacing: 14) {
                 Picker("Boot Info", selection: $bslInputMode) {
                     ForEach(CalculatorViewModel.BSLInputMode.allCases, id: \.self) { mode in
-                        Text(mode.rawValue).tag(mode)
+                        Text(mode.label).tag(mode)
                     }
                 }
                 .pickerStyle(.segmented)

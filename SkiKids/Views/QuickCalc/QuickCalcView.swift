@@ -37,8 +37,7 @@ struct QuickCalcView: View {
                 if let rec = viewModel.recommendation {
                     ResultsView(
                         recommendation: rec,
-                        existingChild: nil,
-                        onSave: {}
+                        existingChild: nil
                     )
                 }
             }

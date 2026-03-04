@@ -11,8 +11,7 @@ struct ChildResultsView: View {
             if let recommendation = viewModel.recommendation {
                 ResultsView(
                     recommendation: recommendation,
-                    existingChild: child,
-                    onSave: {}
+                    existingChild: child
                 )
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {

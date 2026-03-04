@@ -3,7 +3,7 @@ import SwiftUI
 struct ResultsView: View {
     let recommendation: SkiRecommendation
     let existingChild: Child?
-    let onSave: () -> Void
+    var onSave: (() -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
     @State private var showingDINDetail = false
@@ -43,8 +43,8 @@ struct ResultsView: View {
                     poleSection
                     equipmentGuideSection
                     disclaimerSection
-                    if existingChild == nil && !savedProfile {
-                        saveButton
+                    if let onSave, existingChild == nil && !savedProfile {
+                        saveButton(onSave: onSave)
                     }
                 }
                 .padding(.horizontal, 16)
@@ -318,11 +318,11 @@ struct ResultsView: View {
                     let flexRange = bootFlexRecommendation(age: child.age, ability: child.abilityLevel)
                     RecommendationCard(
                         title: "Alpine Boot Flex",
-                        subtitle: "Based on age & ability",
+                        subtitle: "Flex index (lower = softer)",
                         value: flexRange,
                         icon: "shoe.fill",
                         color: Color(hex: "795548"),
-                        detail: "Growth room: \(growthRoomGuide(age: child.age)). Never buy boots more than 1.5 cm too large."
+                        detail: "Flex measures boot stiffness. Softer boots (lower flex) are easier to control for beginners and younger children. Growth room: \(growthRoomGuide(age: child.age)). Never buy boots more than 1.5 cm too large."
                     )
                 }
 
@@ -362,10 +362,10 @@ struct ResultsView: View {
 
     private func helmetGuideCard(age: Int) -> some View {
         let sizeGuide: String
-        if age <= 4 { sizeGuide = "48–52 cm (XS)" }
-        else if age <= 8 { sizeGuide = "52–55.5 cm (S)" }
-        else if age <= 12 { sizeGuide = "55.5–59 cm (M)" }
-        else { sizeGuide = "55.5–62 cm (M/L)" }
+        if age <= 3 { sizeGuide = "46–52 cm (XS)" }
+        else if age <= 7 { sizeGuide = "50–55.5 cm (XS/S)" }
+        else if age <= 12 { sizeGuide = "52–59 cm (S/M)" }
+        else { sizeGuide = "54–62 cm (M/L)" }
 
         return RecommendationCard(
             title: "Helmet Size (estimate)",
@@ -373,7 +373,7 @@ struct ResultsView: View {
             value: sizeGuide,
             icon: "bicycle.helmet",
             color: Color(hex: "9C27B0"),
-            detail: "Measure head circumference for accurate sizing. Never buy a helmet with room to grow."
+            detail: "Head sizes vary widely at the same age. Measure head circumference for accurate sizing. Never buy a helmet with room to grow."
         )
     }
 
@@ -403,7 +403,7 @@ struct ResultsView: View {
         )
     }
 
-    private var saveButton: some View {
+    private func saveButton(onSave: @escaping () -> Void) -> some View {
         Button {
             onSave()
             savedProfile = true
