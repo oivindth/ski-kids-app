@@ -10,6 +10,7 @@ final class CalculatorViewModel {
     var bslMm: Int = 230
     var bslInputMode: BSLInputMode = .estimate
     var shoeSize: Int = 32
+    var footLengthMm: Int = 200
     var abilityLevel: AbilityLevel = .beginner
     var selectedSkiTypes: Set<SkiType> = [.alpine]
 
@@ -38,6 +39,13 @@ final class CalculatorViewModel {
         return nil
     }
 
+    var footLengthError: String? {
+        if bslInputMode == .footLength && (footLengthMm < 100 || footLengthMm > 310) {
+            return "Foot length must be 10.0–31.0 cm"
+        }
+        return nil
+    }
+
     var skiTypeError: String? {
         if selectedSkiTypes.isEmpty { return "Select at least one ski type" }
         return nil
@@ -56,6 +64,9 @@ final class CalculatorViewModel {
         }
         if bslInputMode == .bsl && (bslMm < 150 || bslMm > 380) {
             errors.append("Boot sole length must be between 150 and 380 mm.")
+        }
+        if bslInputMode == .footLength && (footLengthMm < 100 || footLengthMm > 310) {
+            errors.append("Foot length must be between 10.0 and 31.0 cm.")
         }
         if selectedSkiTypes.isEmpty {
             errors.append("Select at least one ski type.")
@@ -77,6 +88,7 @@ final class CalculatorViewModel {
             bslMm: bslMm,
             bslInputMode: bslInputMode,
             shoeSize: shoeSize,
+            footLengthMm: footLengthMm,
             abilityLevel: abilityLevel,
             skiTypes: Array(selectedSkiTypes)
         )
@@ -95,6 +107,8 @@ final class CalculatorViewModel {
         switch mode {
         case .shoeSize:
             shoeSize = child.shoeSize ?? 32
+        case .footLength:
+            footLengthMm = child.footLengthMm ?? 200
         case .bsl:
             bslMm = child.bslMm ?? 230
         case .estimate:
@@ -113,6 +127,7 @@ final class CalculatorViewModel {
         bslMm = 230
         bslInputMode = .estimate
         shoeSize = 32
+        footLengthMm = 200
         abilityLevel = .beginner
         selectedSkiTypes = [.alpine]
         recommendation = nil

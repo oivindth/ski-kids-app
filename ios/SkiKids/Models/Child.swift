@@ -11,6 +11,7 @@ final class Child {
     var bslMm: Int?
     var bslInputModeRaw: Int?
     var shoeSize: Int?
+    var footLengthMm: Int?
     var abilityLevel: AbilityLevel
     var skiTypes: [SkiType]
     var lastCalculated: Date?
@@ -24,6 +25,7 @@ final class Child {
         bslMm: Int? = nil,
         bslInputModeRaw: Int? = nil,
         shoeSize: Int? = nil,
+        footLengthMm: Int? = nil,
         abilityLevel: AbilityLevel = .beginner,
         skiTypes: [SkiType] = [.alpine]
     ) {
@@ -35,6 +37,7 @@ final class Child {
         self.bslMm = bslMm
         self.bslInputModeRaw = bslInputModeRaw
         self.shoeSize = shoeSize
+        self.footLengthMm = footLengthMm
         self.abilityLevel = abilityLevel
         self.skiTypes = skiTypes
         self.lastCalculated = nil

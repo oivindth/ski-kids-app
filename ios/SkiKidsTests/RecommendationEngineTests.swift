@@ -101,6 +101,32 @@ final class RecommendationEngineTests: XCTestCase {
         XCTAssertEqual(result.warnings.count, uniqueWarnings.count, "Duplicate warnings found")
     }
 
+    // MARK: - Foot Length BSL Mode
+
+    func testBSLFromFootLength_showsWarning() {
+        let input = makeInput(bslInputMode: .footLength, footLengthMm: 200)
+        let result = RecommendationEngine.calculate(input: input)
+        XCTAssertTrue(result.warnings.contains { $0.contains("foot length") })
+    }
+
+    func testFootLength_includesBootRecommendation() {
+        let input = makeInput(bslInputMode: .footLength, footLengthMm: 200)
+        let result = RecommendationEngine.calculate(input: input)
+        XCTAssertNotNil(result.bootSizeRecommendation)
+        XCTAssertEqual(result.bootSizeRecommendation?.measuredFootLengthMm, 200)
+    }
+
+    func testNonFootLength_noBootRecommendation() {
+        let estimateInput = makeInput(bslInputMode: .estimate)
+        XCTAssertNil(RecommendationEngine.calculate(input: estimateInput).bootSizeRecommendation)
+
+        let bslInput = makeInput(bslInputMode: .bsl, bslMm: 250)
+        XCTAssertNil(RecommendationEngine.calculate(input: bslInput).bootSizeRecommendation)
+
+        let shoeInput = makeInput(bslInputMode: .shoeSize)
+        XCTAssertNil(RecommendationEngine.calculate(input: shoeInput).bootSizeRecommendation)
+    }
+
     // MARK: - Helpers
 
     private func makeInput(
@@ -111,6 +137,7 @@ final class RecommendationEngineTests: XCTestCase {
         bslInputMode: BSLInputMode = .estimate,
         bslMm: Int = 250,
         shoeSize: Int = 32,
+        footLengthMm: Int = 200,
         abilityLevel: AbilityLevel = .beginner,
         skiTypes: [SkiType] = [.alpine]
     ) -> CalculatorInput {
@@ -122,6 +149,7 @@ final class RecommendationEngineTests: XCTestCase {
             bslMm: bslMm,
             bslInputMode: bslInputMode,
             shoeSize: shoeSize,
+            footLengthMm: footLengthMm,
             abilityLevel: abilityLevel,
             skiTypes: skiTypes
         )

@@ -123,7 +123,9 @@ struct CalculatorFormView: View {
             bslInputMode: $viewModel.bslInputMode,
             bslMm: $viewModel.bslMm,
             shoeSize: $viewModel.shoeSize,
-            bslError: viewModel.hasAttemptedCalculation ? viewModel.bslError : nil
+            footLengthMm: $viewModel.footLengthMm,
+            bslError: viewModel.hasAttemptedCalculation ? viewModel.bslError : nil,
+            footLengthError: viewModel.hasAttemptedCalculation ? viewModel.footLengthError : nil
         )
     }
 
@@ -168,6 +170,7 @@ struct CalculatorFormView: View {
             bslMm: viewModel.bslInputMode == .bsl ? viewModel.bslMm : nil,
             bslInputModeRaw: viewModel.bslInputMode.rawValue,
             shoeSize: viewModel.bslInputMode == .shoeSize ? viewModel.shoeSize : nil,
+            footLengthMm: viewModel.bslInputMode == .footLength ? viewModel.footLengthMm : nil,
             abilityLevel: viewModel.abilityLevel,
             skiTypes: Array(viewModel.selectedSkiTypes),
             context: modelContext

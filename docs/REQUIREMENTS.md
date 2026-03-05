@@ -1,9 +1,9 @@
 # Kids' Ski Equipment Sizing App — Product Requirements Document
 
-**Version:** 1.3
+**Version:** 1.4
 **Date:** 2026-03-05
 **Author:** Product Owner
-**Status:** Updated — age-bracketed alpine ski sizing, input ranges, helmet sizes, platform-neutral language
+**Status:** Updated — boot sizing: foot length input mode, mondo→BSL estimation, boot size recommendations
 
 ---
 
@@ -84,18 +84,20 @@ These are the inputs collected per child profile. All fields except name are req
 | Height | Integer (cm) | 60–210 cm | Measured without shoes |
 | Weight | Integer (kg) | 8–120 kg | Used for DIN and pole sizing |
 | Age | Integer (years) | 2–99 | Used for DIN adjustment and age-bracket logic |
-| Boot Sole Length (BSL) | Integer (mm) | 150–380 mm | Optional; needed for precise DIN lookup. Can be estimated from shoe size or height if unknown |
+| Boot Sole Length (BSL) | Integer (mm) | 150–380 mm | Optional; needed for precise DIN lookup. Can be estimated from foot length, shoe size, or height if unknown |
+| Foot Length | Integer (mm) | 100–310 mm | Optional; displayed as cm in UI. Equal to Mondo Point size. Used for boot sizing and BSL estimation |
 | Ability Level | Enum | Beginner / Intermediate / Advanced | Used for ski length and DIN type |
 | Ski Type | Enum (multi-select) | Alpine, XC Classic, XC Skate | Determines which calculations to show |
 
 ### BSL Input Modes
 
-The app supports three BSL input modes:
+The app supports four BSL input modes, ordered from least to most accurate:
 
 | Mode | Description |
 |---|---|
 | **Estimate** (default) | BSL estimated from height using lookup table. Warning shown in results. |
 | **Shoe Size** | BSL estimated from EU shoe size. Warning shown in results. |
+| **Foot Length** | User measures foot in cm (= Mondo Point). BSL estimated from foot length. Also enables boot size recommendation in results. Warning shown. |
 | **BSL** | User enters actual BSL from inside the boot. Most accurate. |
 
 ### Ability Level Definitions (display in app)
@@ -122,6 +124,28 @@ If BSL is unknown, estimate from EU shoe size. Show this as a helper in the app 
 | 33–34 | 268 |
 | 35–36 | 285 |
 | 37–38 | 298 |
+
+### Boot Sole Length (BSL) Estimation — From Foot Length (Mondo Point)
+
+If the user provides a foot length measurement in cm, this equals the Mondo Point size. BSL is estimated from Mondo Point using the following table (based on Head junior boot data, representative of industry averages):
+
+| Foot Length / Mondo (cm) | Approx BSL (mm) |
+|---|---|
+| 15.0–16.0 | 205 |
+| 16.5–17.0 | 215 |
+| 17.5–18.5 | 225 |
+| 19.0–19.5 | 237 |
+| 20.0–20.5 | 245 |
+| 21.0–21.5 | 257 |
+| 22.0–22.5 | 265 |
+| 23.0–23.5 | 277 |
+| 24.0–24.5 | 285 |
+| 25.0–25.5 | 297 |
+| 26.0+ | 305 |
+
+**Note:** BSL varies by boot brand and model (±5–10 mm at same Mondo size). This table provides an estimate for DIN calculations. For accurate DIN settings, always use the actual BSL printed on the boot.
+
+**Implementation:** Store foot length as integer mm internally (e.g., 200 = 20.0 cm). Display as cm with one decimal in UI. Step size: 5 mm (= 0.5 cm half-sizes).
 
 ### Boot Sole Length (BSL) Estimation — From Height
 
@@ -564,6 +588,39 @@ Mondo point (MP) is the international standard for ski boot sizing. It represent
 **Display note in app:**
 > "Ski boots should NOT have the same amount of room as regular shoes. Too much room causes foot movement leading to poor control and blisters. For children, 1–1.5 cm of growth room is appropriate. Never buy boots more than 1.5 cm too large."
 
+### Boot Size Recommendation (Implemented)
+
+When the user provides a foot length measurement (via the "Foot Length" BSL input mode), the app calculates and displays a boot size recommendation in the Equipment Guide section of results.
+
+**Calculation:**
+
+```
+growthRoom = age < 6 ? 15mm : age <= 10 ? 10mm : age <= 14 ? 10mm : 5mm
+recommendedMondo = footLengthMm + growthRoom  (in mm, display as cm)
+euSize = lookup from Mondo Point table above
+estimatedBSL = lookup from Mondo→BSL table above
+```
+
+**Growth room computation values** (midpoint of recommendation ranges):
+
+| Age | Growth Room (mm) |
+|---|---|
+| Under 6 | 15 |
+| 6–10 | 10 |
+| 11–14 | 10 |
+| 14+ | 5 |
+
+**Display in results:**
+- "Ski Boot Size" card showing:
+  - Measured foot length (cm)
+  - Recommended Mondo Point size (with growth room)
+  - Equivalent EU ski boot size
+  - Growth room applied
+  - Estimated BSL (used for DIN)
+  - Note about snug fit
+
+**When foot length is NOT provided** (Estimate, Shoe Size, or BSL modes), the boot size recommendation card is not shown. The existing flex rating and growth room text are still displayed.
+
 ### Alpine Boot Flex Rating for Kids
 
 The app shows boot flex recommendations in the results view based on age and ability:
@@ -653,7 +710,6 @@ The following features from the original requirements are not yet implemented:
 - **Growth tracking and upgrade alerts** — track measurements over time and alert when equipment is outgrown
 - **Cloud sync** — sync profiles across devices (iCloud on iOS, platform-appropriate on Android)
 - **Date of birth** — auto-update age from DOB
-- **Boot sizing calculator** — Mondo point recommendations from foot length
 - **Per-child equipment checklists** — currently only a global checklist in Tips
 
 ---

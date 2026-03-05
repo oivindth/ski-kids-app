@@ -310,9 +310,20 @@ struct ResultsView: View {
         let hasAlpine = recommendation.alpineSkiLength != nil
         let hasXC = recommendation.xcClassicLength != nil || recommendation.xcSkateLength != nil
 
-        if hasAlpine || hasXC {
+        if hasAlpine || hasXC || recommendation.bootSizeRecommendation != nil {
             VStack(spacing: 12) {
                 SectionHeader(title: "Equipment Guide", icon: "bag.fill", color: Color(hex: "795548"))
+
+                if let boot = recommendation.bootSizeRecommendation {
+                    RecommendationCard(
+                        title: "Ski Boot Size",
+                        subtitle: "Based on foot length (\(boot.measuredFootCm) cm)",
+                        value: "Mondo \(boot.recommendedMondoCm) (EU \(boot.euSize))",
+                        icon: "shoe.2.fill",
+                        color: Color(hex: "795548"),
+                        detail: "Measured foot: \(boot.measuredFootCm) cm. Growth room: +\(boot.growthRoomCm) cm for age. Estimated BSL: \(boot.estimatedBSL) mm. Ski boots should fit snugly — never buy more than 1.5 cm too large."
+                    )
+                }
 
                 if hasAlpine {
                     let flexRange = bootFlexRecommendation(age: child.age, ability: child.abilityLevel)
@@ -571,6 +582,9 @@ struct SkiShopModeView: View {
                             }
                             if let pole = recommendation.xcSkatePoleLength {
                                 shopRow("XC Skate Poles", "\(pole) cm", "arrow.up.and.down", AppColors.secondary)
+                            }
+                            if let boot = recommendation.bootSizeRecommendation {
+                                shopRow("Boot Size", "Mondo \(boot.recommendedMondoCm) (EU \(boot.euSize))", "shoe.2.fill", Color(hex: "795548"))
                             }
                         }
                         .padding(.horizontal, 20)

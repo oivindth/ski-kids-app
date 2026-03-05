@@ -95,7 +95,9 @@ struct QuickCalcView: View {
             bslInputMode: $viewModel.bslInputMode,
             bslMm: $viewModel.bslMm,
             shoeSize: $viewModel.shoeSize,
-            bslError: viewModel.hasAttemptedCalculation ? viewModel.bslError : nil
+            footLengthMm: $viewModel.footLengthMm,
+            bslError: viewModel.hasAttemptedCalculation ? viewModel.bslError : nil,
+            footLengthError: viewModel.hasAttemptedCalculation ? viewModel.footLengthError : nil
         )
     }
 

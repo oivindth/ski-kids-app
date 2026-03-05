@@ -194,6 +194,71 @@ struct SkiCalculator {
         }
     }
 
+    static func estimatedBSLFromFootLength(footLengthMm: Int) -> Int {
+        switch footLengthMm {
+        case ...160: return 205
+        case 161...170: return 215
+        case 171...185: return 225
+        case 186...195: return 237
+        case 196...205: return 245
+        case 206...215: return 257
+        case 216...225: return 265
+        case 226...235: return 277
+        case 236...245: return 285
+        case 246...255: return 297
+        default: return 305
+        }
+    }
+
+    static func growthRoomMm(age: Int) -> Int {
+        if age < 6 { return 15 }
+        if age <= 14 { return 10 }
+        return 5
+    }
+
+    static func mondoToEUSize(mondoMm: Int) -> String {
+        let mondoCm = Double(mondoMm) / 10.0
+        switch mondoCm {
+        case ..<15.0: return "23"
+        case 15.0..<15.5: return "24"
+        case 15.5..<16.0: return "25"
+        case 16.0..<16.5: return "26"
+        case 16.5..<17.0: return "27"
+        case 17.0..<17.5: return "27.5"
+        case 17.5..<18.0: return "28"
+        case 18.0..<18.5: return "29"
+        case 18.5..<19.0: return "29.5"
+        case 19.0..<19.5: return "30"
+        case 19.5..<20.0: return "31"
+        case 20.0..<20.5: return "32"
+        case 20.5..<21.0: return "33"
+        case 21.0..<21.5: return "33.5"
+        case 21.5..<22.0: return "34"
+        case 22.0..<22.5: return "35"
+        case 22.5..<23.0: return "36"
+        case 23.0..<23.5: return "36.5"
+        case 23.5..<24.0: return "37"
+        case 24.0..<24.5: return "38"
+        case 24.5..<25.0: return "38.5"
+        default: return "39+"
+        }
+    }
+
+    static func recommendedBootSize(footLengthMm: Int, age: Int) -> BootSizeRecommendation {
+        let growth = growthRoomMm(age: age)
+        let recommendedMondo = footLengthMm + growth
+        let euSize = mondoToEUSize(mondoMm: recommendedMondo)
+        let bsl = estimatedBSLFromFootLength(footLengthMm: footLengthMm)
+
+        return BootSizeRecommendation(
+            measuredFootLengthMm: footLengthMm,
+            recommendedMondoMm: recommendedMondo,
+            growthRoomMm: growth,
+            euSize: euSize,
+            estimatedBSL: bsl
+        )
+    }
+
     static func estimatedBSLFromHeight(heightCm: Int) -> Int {
         switch heightCm {
         case ...85:  return 170

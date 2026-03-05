@@ -21,6 +21,7 @@ final class ChildViewModel {
         bslMm: Int?,
         bslInputModeRaw: Int,
         shoeSize: Int?,
+        footLengthMm: Int?,
         abilityLevel: AbilityLevel,
         skiTypes: [SkiType],
         context: ModelContext
@@ -33,6 +34,7 @@ final class ChildViewModel {
             existing.bslMm = bslMm
             existing.bslInputModeRaw = bslInputModeRaw
             existing.shoeSize = shoeSize
+            existing.footLengthMm = footLengthMm
             existing.abilityLevel = abilityLevel
             existing.skiTypes = skiTypes
         } else {
@@ -44,6 +46,7 @@ final class ChildViewModel {
                 bslMm: bslMm,
                 bslInputModeRaw: bslInputModeRaw,
                 shoeSize: shoeSize,
+                footLengthMm: footLengthMm,
                 abilityLevel: abilityLevel,
                 skiTypes: skiTypes
             )

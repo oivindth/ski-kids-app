@@ -243,4 +243,79 @@ final class SkiCalculatorTests: XCTestCase {
         XCTAssertEqual(SkiCalculator.estimatedBSLFromHeight(heightCm: 150), 280)
         XCTAssertEqual(SkiCalculator.estimatedBSLFromHeight(heightCm: 180), 315)
     }
+
+    // MARK: - BSL from Foot Length (Mondo)
+
+    func testEstimatedBSLFromFootLength() {
+        XCTAssertEqual(SkiCalculator.estimatedBSLFromFootLength(footLengthMm: 150), 205)
+        XCTAssertEqual(SkiCalculator.estimatedBSLFromFootLength(footLengthMm: 170), 215)
+        XCTAssertEqual(SkiCalculator.estimatedBSLFromFootLength(footLengthMm: 180), 225)
+        XCTAssertEqual(SkiCalculator.estimatedBSLFromFootLength(footLengthMm: 195), 237)
+        XCTAssertEqual(SkiCalculator.estimatedBSLFromFootLength(footLengthMm: 200), 245)
+        XCTAssertEqual(SkiCalculator.estimatedBSLFromFootLength(footLengthMm: 210), 257)
+        XCTAssertEqual(SkiCalculator.estimatedBSLFromFootLength(footLengthMm: 220), 265)
+        XCTAssertEqual(SkiCalculator.estimatedBSLFromFootLength(footLengthMm: 230), 277)
+        XCTAssertEqual(SkiCalculator.estimatedBSLFromFootLength(footLengthMm: 240), 285)
+        XCTAssertEqual(SkiCalculator.estimatedBSLFromFootLength(footLengthMm: 250), 297)
+        XCTAssertEqual(SkiCalculator.estimatedBSLFromFootLength(footLengthMm: 260), 305)
+    }
+
+    func testEstimatedBSLFromFootLength_boundaries() {
+        // Lower boundary
+        XCTAssertEqual(SkiCalculator.estimatedBSLFromFootLength(footLengthMm: 100), 205)
+        // Upper boundary
+        XCTAssertEqual(SkiCalculator.estimatedBSLFromFootLength(footLengthMm: 300), 305)
+        // Exact boundary: 160 is top of first range
+        XCTAssertEqual(SkiCalculator.estimatedBSLFromFootLength(footLengthMm: 160), 205)
+        // 161 enters next range
+        XCTAssertEqual(SkiCalculator.estimatedBSLFromFootLength(footLengthMm: 161), 215)
+    }
+
+    // MARK: - Growth Room
+
+    func testGrowthRoom() {
+        XCTAssertEqual(SkiCalculator.growthRoomMm(age: 3), 15)
+        XCTAssertEqual(SkiCalculator.growthRoomMm(age: 5), 15)
+        XCTAssertEqual(SkiCalculator.growthRoomMm(age: 6), 10)
+        XCTAssertEqual(SkiCalculator.growthRoomMm(age: 10), 10)
+        XCTAssertEqual(SkiCalculator.growthRoomMm(age: 14), 10)
+        XCTAssertEqual(SkiCalculator.growthRoomMm(age: 15), 5)
+    }
+
+    // MARK: - Mondo to EU Size
+
+    func testMondoToEUSize() {
+        XCTAssertEqual(SkiCalculator.mondoToEUSize(mondoMm: 150), "24")
+        XCTAssertEqual(SkiCalculator.mondoToEUSize(mondoMm: 170), "27.5")
+        XCTAssertEqual(SkiCalculator.mondoToEUSize(mondoMm: 200), "32")
+        XCTAssertEqual(SkiCalculator.mondoToEUSize(mondoMm: 220), "35")
+        XCTAssertEqual(SkiCalculator.mondoToEUSize(mondoMm: 240), "38")
+        XCTAssertEqual(SkiCalculator.mondoToEUSize(mondoMm: 260), "39+")
+    }
+
+    // MARK: - Boot Size Recommendation
+
+    func testRecommendedBootSize_youngChild() {
+        let result = SkiCalculator.recommendedBootSize(footLengthMm: 170, age: 5)
+        XCTAssertEqual(result.measuredFootLengthMm, 170)
+        XCTAssertEqual(result.growthRoomMm, 15)
+        XCTAssertEqual(result.recommendedMondoMm, 185)  // 170 + 15
+        XCTAssertEqual(result.euSize, "29.5")  // mondo 18.5 → EU 29.5
+        XCTAssertEqual(result.estimatedBSL, 215)  // BSL for 170mm foot
+    }
+
+    func testRecommendedBootSize_olderChild() {
+        let result = SkiCalculator.recommendedBootSize(footLengthMm: 240, age: 12)
+        XCTAssertEqual(result.growthRoomMm, 10)
+        XCTAssertEqual(result.recommendedMondoMm, 250)  // 240 + 10
+        XCTAssertEqual(result.euSize, "39+")
+        XCTAssertEqual(result.estimatedBSL, 285)
+    }
+
+    func testRecommendedBootSize_teen() {
+        let result = SkiCalculator.recommendedBootSize(footLengthMm: 260, age: 15)
+        XCTAssertEqual(result.growthRoomMm, 5)
+        XCTAssertEqual(result.recommendedMondoMm, 265)  // 260 + 5
+        XCTAssertEqual(result.estimatedBSL, 305)
+    }
 }

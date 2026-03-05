@@ -51,6 +51,26 @@ struct PoleRecommendation {
     }
 }
 
+struct BootSizeRecommendation {
+    let measuredFootLengthMm: Int
+    let recommendedMondoMm: Int
+    let growthRoomMm: Int
+    let euSize: String
+    let estimatedBSL: Int
+
+    var recommendedMondoCm: String {
+        String(format: "%.1f", Double(recommendedMondoMm) / 10.0)
+    }
+
+    var measuredFootCm: String {
+        String(format: "%.1f", Double(measuredFootLengthMm) / 10.0)
+    }
+
+    var growthRoomCm: String {
+        String(format: "%.1f", Double(growthRoomMm) / 10.0)
+    }
+}
+
 struct SkiRecommendation {
     let child: ChildSnapshot
     let alpineSkiLength: SkiLengthRange?
@@ -60,6 +80,7 @@ struct SkiRecommendation {
     let alpinePoleLength: Int?
     let xcClassicPoleLength: Int?
     let xcSkatePoleLength: Int?
+    let bootSizeRecommendation: BootSizeRecommendation?
     let warnings: [String]
     let calculatedAt: Date
 
@@ -103,6 +124,10 @@ struct SkiRecommendation {
         }
         if let pole = xcSkatePoleLength {
             lines.append("📏 XC Skate Poles: \(pole) cm")
+        }
+        if let boot = bootSizeRecommendation {
+            lines.append("👢 Boot Size: Mondo \(boot.recommendedMondoCm) (EU \(boot.euSize))")
+            lines.append("   Foot: \(boot.measuredFootCm) cm + \(boot.growthRoomCm) cm growth room")
         }
 
         lines.append("")

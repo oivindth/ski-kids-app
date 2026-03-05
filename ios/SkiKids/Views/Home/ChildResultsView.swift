@@ -55,6 +55,8 @@ struct ChildResultsView: View {
         .onChange(of: child.abilityLevel) { recalculate() }
         .onChange(of: child.skiTypes) { recalculate() }
         .onChange(of: child.bslMm) { recalculate() }
+        .onChange(of: child.footLengthMm) { recalculate() }
+        .onChange(of: child.bslInputModeRaw) { recalculate() }
         .onChange(of: child.name) { recalculate() }
     }
 

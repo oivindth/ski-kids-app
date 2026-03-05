@@ -122,7 +122,13 @@ struct BSLFormSection: View {
     @Binding var bslInputMode: BSLInputMode
     @Binding var bslMm: Int
     @Binding var shoeSize: Int
+    @Binding var footLengthMm: Int
     var bslError: String? = nil
+    var footLengthError: String? = nil
+
+    private var footLengthDisplay: String {
+        String(format: "%.1f", Double(footLengthMm) / 10.0)
+    }
 
     var body: some View {
         FormCard(title: "Boot Sole Length", icon: "shoe.fill", iconColor: AppColors.secondary) {
@@ -147,6 +153,17 @@ struct BSLFormSection: View {
                     Text("Found printed on the boot sole or inside the boot")
                         .font(.caption)
                         .foregroundStyle(AppColors.textSecondary)
+                case .footLength:
+                    StepperRow(label: "Foot Length", value: $footLengthMm, unit: "mm", range: 100...310, step: 5, icon: "ruler.fill", iconColor: Color(hex: "795548"))
+                    if let error = footLengthError {
+                        Text(error)
+                            .font(.caption2)
+                            .foregroundStyle(.red)
+                            .padding(.leading, 4)
+                    }
+                    Text("\(footLengthDisplay) cm — Measure heel to longest toe. This equals the Mondo Point size.")
+                        .font(.caption)
+                        .foregroundStyle(AppColors.textSecondary)
                 case .shoeSize:
                     StepperRow(label: "EU Shoe Size", value: $shoeSize, unit: "EU", range: 15...50, step: 1, icon: "shoe.fill", iconColor: Color(hex: "795548"))
                     Text("Used to estimate boot sole length")
@@ -156,7 +173,7 @@ struct BSLFormSection: View {
                     HStack(spacing: 8) {
                         Image(systemName: "info.circle")
                             .foregroundStyle(AppColors.textSecondary)
-                        Text("Boot sole length will be estimated from height. For accurate DIN, provide BSL or shoe size.")
+                        Text("Boot sole length will be estimated from height. For accurate DIN, provide BSL, foot length, or shoe size.")
                             .font(.caption)
                             .foregroundStyle(AppColors.textSecondary)
                     }

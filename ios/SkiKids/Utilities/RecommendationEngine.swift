@@ -3,12 +3,14 @@ import Foundation
 enum BSLInputMode: Int, CaseIterable {
     case estimate = 0
     case shoeSize = 1
-    case bsl = 2
+    case footLength = 2
+    case bsl = 3
 
     var label: String {
         switch self {
         case .estimate: return "Estimate"
         case .shoeSize: return "Shoe Size"
+        case .footLength: return "Foot Length"
         case .bsl: return "BSL"
         }
     }
@@ -22,6 +24,7 @@ struct CalculatorInput {
     let bslMm: Int
     let bslInputMode: BSLInputMode
     let shoeSize: Int
+    let footLengthMm: Int
     let abilityLevel: AbilityLevel
     let skiTypes: [SkiType]
 }
@@ -33,6 +36,9 @@ struct RecommendationEngine {
         var bslEstimationMethod: String? = nil
         if input.bslInputMode == .bsl {
             effectiveBSL = input.bslMm
+        } else if input.bslInputMode == .footLength {
+            effectiveBSL = SkiCalculator.estimatedBSLFromFootLength(footLengthMm: input.footLengthMm)
+            bslEstimationMethod = "foot length (\(String(format: "%.1f", Double(input.footLengthMm) / 10.0)) cm)"
         } else if input.bslInputMode == .shoeSize {
             effectiveBSL = SkiCalculator.estimatedBSL(fromEUSize: input.shoeSize)
             bslEstimationMethod = "shoe size (EU \(input.shoeSize))"
@@ -90,6 +96,10 @@ struct RecommendationEngine {
             ? SkiCalculator.xcSkatePoleLength(heightCm: input.heightCm)
             : nil
 
+        let bootRecommendation: BootSizeRecommendation? = (input.bslInputMode == .footLength)
+            ? SkiCalculator.recommendedBootSize(footLengthMm: input.footLengthMm, age: input.age)
+            : nil
+
         if input.bslInputMode != .bsl && input.skiTypes.contains(.alpine) {
             if let method = bslEstimationMethod {
                 warnings.insert("Boot sole length not provided. BSL was estimated from \(method). Provide the actual Boot Sole Length (printed inside the boot) for accurate DIN results.", at: 0)
@@ -114,6 +124,7 @@ struct RecommendationEngine {
             alpinePoleLength: alpinePole,
             xcClassicPoleLength: xcClassicPole,
             xcSkatePoleLength: xcSkatePole,
+            bootSizeRecommendation: bootRecommendation,
             warnings: warnings.reduce(into: [String]()) { result, warning in
                 if !result.contains(warning) { result.append(warning) }
             },
