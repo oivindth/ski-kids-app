@@ -96,9 +96,22 @@ struct RecommendationEngine {
             ? SkiCalculator.xcSkatePoleLength(heightCm: input.heightCm)
             : nil
 
-        let bootRecommendation: BootSizeRecommendation? = (input.bslInputMode == .footLength)
-            ? SkiCalculator.recommendedBootSize(footLengthMm: input.footLengthMm, age: input.age)
-            : nil
+        let bootRecommendation: BootSizeRecommendation
+        switch input.bslInputMode {
+        case .footLength:
+            bootRecommendation = SkiCalculator.recommendedBootSize(
+                footLengthMm: input.footLengthMm, age: input.age, confidence: .measured)
+        case .shoeSize:
+            let footLength = SkiCalculator.estimatedFootLengthFromShoeSize(euSize: input.shoeSize)
+            bootRecommendation = SkiCalculator.recommendedBootSize(
+                footLengthMm: footLength, age: input.age, confidence: .fromShoeSize)
+        case .bsl:
+            bootRecommendation = SkiCalculator.bootSizeFromBSL(bslMm: input.bslMm, age: input.age)
+        case .estimate:
+            let footLength = SkiCalculator.estimatedFootLengthFromHeight(heightCm: input.heightCm)
+            bootRecommendation = SkiCalculator.recommendedBootSize(
+                footLengthMm: footLength, age: input.age, confidence: .fromHeight)
+        }
 
         if input.bslInputMode != .bsl && input.skiTypes.contains(.alpine) {
             if let method = bslEstimationMethod {

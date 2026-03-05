@@ -217,34 +217,68 @@ struct SkiCalculator {
     }
 
     static func mondoToEUSize(mondoMm: Int) -> String {
+        // Based on Head junior boot data, cross-referenced with Wayfinder
         let mondoCm = Double(mondoMm) / 10.0
         switch mondoCm {
-        case ..<15.0: return "23"
-        case 15.0..<15.5: return "24"
+        case ..<15.5: return "24"
         case 15.5..<16.0: return "25"
-        case 16.0..<16.5: return "26"
-        case 16.5..<17.0: return "27"
-        case 17.0..<17.5: return "27.5"
+        case 16.0..<16.5: return "25.5"
+        case 16.5..<17.0: return "26"
+        case 17.0..<17.5: return "27"
         case 17.5..<18.0: return "28"
-        case 18.0..<18.5: return "29"
-        case 18.5..<19.0: return "29.5"
+        case 18.0..<18.5: return "28.5"
+        case 18.5..<19.0: return "29"
         case 19.0..<19.5: return "30"
         case 19.5..<20.0: return "31"
-        case 20.0..<20.5: return "32"
-        case 20.5..<21.0: return "33"
-        case 21.0..<21.5: return "33.5"
+        case 20.0..<20.5: return "31.5"
+        case 20.5..<21.0: return "32"
+        case 21.0..<21.5: return "33"
         case 21.5..<22.0: return "34"
-        case 22.0..<22.5: return "35"
-        case 22.5..<23.0: return "36"
-        case 23.0..<23.5: return "36.5"
-        case 23.5..<24.0: return "37"
-        case 24.0..<24.5: return "38"
-        case 24.5..<25.0: return "38.5"
-        default: return "39+"
+        case 22.0..<22.5: return "34.5"
+        case 22.5..<23.0: return "35"
+        case 23.0..<23.5: return "35.5"
+        case 23.5..<24.0: return "36"
+        case 24.0..<24.5: return "37"
+        case 24.5..<25.0: return "38"
+        case 25.0..<25.5: return "39"
+        case 25.5..<26.0: return "40"
+        default: return "40+"
         }
     }
 
-    static func recommendedBootSize(footLengthMm: Int, age: Int) -> BootSizeRecommendation {
+    static func estimatedFootLengthFromShoeSize(euSize: Int) -> Int {
+        // EU size → approximate foot length (mondo) in mm
+        // Standard formula: mondo ≈ (EU + 2) / 1.5 ... but lookup is more reliable for kids
+        switch euSize {
+        case ...24: return 150
+        case 25: return 155
+        case 26: return 165
+        case 27: return 170
+        case 28: return 175
+        case 29: return 185
+        case 30: return 190
+        case 31: return 195
+        case 32: return 200
+        case 33: return 210
+        case 34: return 215
+        case 35: return 220
+        case 36: return 225
+        case 37: return 235
+        case 38: return 240
+        case 39: return 250
+        case 40: return 255
+        default: return 260
+        }
+    }
+
+    static func estimatedFootLengthFromHeight(heightCm: Int) -> Int {
+        // Rough estimate: foot length ≈ height * 0.152 for children
+        // Rounded to nearest 5mm
+        let estimated = Double(heightCm) * 0.152
+        return max(Int((estimated * 10 / 5).rounded()) * 5, 100)
+    }
+
+    static func recommendedBootSize(footLengthMm: Int, age: Int, confidence: BootSizeConfidence) -> BootSizeRecommendation {
         let growth = growthRoomMm(age: age)
         let recommendedMondo = footLengthMm + growth
         let euSize = mondoToEUSize(mondoMm: recommendedMondo)
@@ -255,7 +289,37 @@ struct SkiCalculator {
             recommendedMondoMm: recommendedMondo,
             growthRoomMm: growth,
             euSize: euSize,
-            estimatedBSL: bsl
+            estimatedBSL: bsl,
+            confidence: confidence
+        )
+    }
+
+    static func bootSizeFromBSL(bslMm: Int, age: Int) -> BootSizeRecommendation {
+        // Reverse: BSL → approximate mondo (foot length)
+        // This is rough since BSL varies by brand
+        let approxMondo: Int
+        switch bslMm {
+        case ...210: approxMondo = 150
+        case 211...220: approxMondo = 165
+        case 221...230: approxMondo = 180
+        case 231...240: approxMondo = 190
+        case 241...250: approxMondo = 200
+        case 251...260: approxMondo = 210
+        case 261...270: approxMondo = 220
+        case 271...280: approxMondo = 230
+        case 281...290: approxMondo = 240
+        case 291...300: approxMondo = 250
+        default: approxMondo = 260
+        }
+        let euSize = mondoToEUSize(mondoMm: approxMondo)
+
+        return BootSizeRecommendation(
+            measuredFootLengthMm: approxMondo,
+            recommendedMondoMm: approxMondo,
+            growthRoomMm: 0,
+            euSize: euSize,
+            estimatedBSL: bslMm,
+            confidence: .hasBoots
         )
     }
 

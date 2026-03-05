@@ -550,24 +550,27 @@ Mondo point (MP) is the international standard for ski boot sizing. It represent
 | Mondo Point | Approximate EU Size | Approximate US Size (kids) |
 |---|---|---|
 | 15.0 | EU 24 | US 8.5 toddler |
-| 15.5 | EU 24.5 | US 9 toddler |
-| 16.0 | EU 25 | US 9.5 toddler |
+| 15.5 | EU 25 | US 9 toddler |
+| 16.0 | EU 25.5 | US 9.5 toddler |
 | 16.5 | EU 26 | US 10 toddler |
 | 17.0 | EU 27 | US 10.5 toddler |
 | 17.5 | EU 28 | US 11 kids |
-| 18.0 | EU 29 | US 12 kids |
-| 18.5 | EU 29.5 | US 12.5 kids |
+| 18.0 | EU 28.5 | US 12 kids |
+| 18.5 | EU 29 | US 12.5 kids |
 | 19.0 | EU 30 | US 13 kids |
 | 19.5 | EU 31 | US 1 youth |
-| 20.0 | EU 32 | US 2 youth |
-| 20.5 | EU 33 | US 2.5 youth |
-| 21.0 | EU 33.5 | US 3 youth |
+| 20.0 | EU 31.5 | US 1.5 youth |
+| 20.5 | EU 32 | US 2 youth |
+| 21.0 | EU 33 | US 3 youth |
 | 21.5 | EU 34 | US 3.5 youth |
-| 22.0 | EU 35 | US 4 youth |
-| 22.5 | EU 36 | US 4.5 youth |
-| 23.0 | EU 37 | US 5 youth |
-| 23.5 | EU 38 | US 6 youth |
-| 24.0 | EU 38.5 | US 6.5 youth |
+| 22.0 | EU 34.5 | US 4 youth |
+| 22.5 | EU 35 | US 4.5 youth |
+| 23.0 | EU 35.5 | US 5 youth |
+| 23.5 | EU 36 | US 5.5 youth |
+| 24.0 | EU 37 | US 6 youth |
+| 24.5 | EU 38 | US 6.5 youth |
+
+*Sources: Head junior boot sizing, cross-referenced with Wayfinder and Ski Service. EU sizes may vary ±0.5 between manufacturers.*
 
 ### How to Measure Foot Length (show in app as instructions)
 

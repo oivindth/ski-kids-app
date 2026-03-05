@@ -306,69 +306,131 @@ struct ResultsView: View {
 
     @ViewBuilder
     private var equipmentGuideSection: some View {
-        let child = recommendation.child
-        let hasAlpine = recommendation.alpineSkiLength != nil
-        let hasXC = recommendation.xcClassicLength != nil || recommendation.xcSkateLength != nil
+        VStack(spacing: 12) {
+            SectionHeader(title: "Equipment Guide", icon: "bag.fill", color: Color(hex: "795548"))
+            bootSizingCard
+            helmetGuideCard(age: recommendation.child.age)
+        }
+    }
 
-        if hasAlpine || hasXC || recommendation.bootSizeRecommendation != nil {
-            VStack(spacing: 12) {
-                SectionHeader(title: "Equipment Guide", icon: "bag.fill", color: Color(hex: "795548"))
+    private var bootSizingCard: some View {
+        let boot = recommendation.bootSizeRecommendation
+        let bootColor = Color(hex: "795548")
 
-                if let boot = recommendation.bootSizeRecommendation {
-                    RecommendationCard(
-                        title: "Ski Boot Size",
-                        subtitle: "Based on foot length (\(boot.measuredFootCm) cm)",
-                        value: "Mondo \(boot.recommendedMondoCm) (EU \(boot.euSize))",
-                        icon: "shoe.2.fill",
-                        color: Color(hex: "795548"),
-                        detail: "Measured foot: \(boot.measuredFootCm) cm. Growth room: +\(boot.growthRoomCm) cm for age. Estimated BSL: \(boot.estimatedBSL) mm. Ski boots should fit snugly — never buy more than 1.5 cm too large."
+        return VStack(alignment: .leading, spacing: 14) {
+            // Header with confidence badge
+            HStack(spacing: 12) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(bootColor.opacity(0.12))
+                        .frame(width: 44, height: 44)
+                    Image(systemName: "shoe.2.fill")
+                        .font(.body)
+                        .foregroundStyle(bootColor)
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Ski Boot Sizing")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(AppColors.textPrimary)
+                    Text(boot.confidence.rawValue)
+                        .font(.caption2)
+                        .foregroundStyle(bootColor)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 2)
+                        .background(bootColor.opacity(0.1))
+                        .clipShape(Capsule())
+                }
+
+                Spacer()
+            }
+
+            // Key specs grid
+            VStack(spacing: 0) {
+                if boot.confidence != .hasBoots {
+                    bootSpecRow(
+                        label: "Boot Size",
+                        value: "Mondo \(boot.recommendedMondoCm)",
+                        secondary: "EU \(boot.euSize)",
+                        showDivider: true
                     )
                 }
 
-                if hasAlpine {
-                    let flexRange = bootFlexRecommendation(age: child.age, ability: child.abilityLevel)
-                    RecommendationCard(
-                        title: "Alpine Boot Flex",
-                        subtitle: "Flex index (lower = softer)",
-                        value: flexRange,
-                        icon: "shoe.fill",
-                        color: Color(hex: "795548"),
-                        detail: "Flex measures boot stiffness. Softer boots (lower flex) are easier to control for beginners and younger children. Growth room: \(growthRoomGuide(age: child.age)). Never buy boots more than 1.5 cm too large."
+                bootSpecRow(
+                    label: "Boot Sole Length",
+                    value: "\(boot.estimatedBSL) mm",
+                    secondary: boot.confidence == .hasBoots ? "entered directly" : "for DIN binding setup",
+                    showDivider: boot.confidence != .hasBoots && boot.growthRoomMm > 0
+                )
+
+                if boot.confidence != .hasBoots && boot.growthRoomMm > 0 {
+                    bootSpecRow(
+                        label: "Growth Room",
+                        value: "+\(boot.growthRoomCm) cm",
+                        secondary: "foot \(boot.measuredFootCm) cm → boot \(boot.recommendedMondoCm) cm",
+                        showDivider: false
                     )
                 }
+            }
+            .padding(12)
+            .background(bootColor.opacity(0.04))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
 
-                helmetGuideCard(age: child.age)
+            // Contextual tip
+            HStack(alignment: .top, spacing: 8) {
+                Image(systemName: "info.circle.fill")
+                    .font(.caption)
+                    .foregroundStyle(bootColor)
+                    .padding(.top, 1)
+                Text(bootTip(confidence: boot.confidence))
+                    .font(.caption)
+                    .foregroundStyle(AppColors.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(16)
+        .background(AppColors.surface)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: .black.opacity(0.05), radius: 6, x: 0, y: 2)
+    }
+
+    private func bootSpecRow(label: String, value: String, secondary: String, showDivider: Bool) -> some View {
+        VStack(spacing: 0) {
+            HStack {
+                Text(label)
+                    .font(.caption)
+                    .foregroundStyle(AppColors.textSecondary)
+                Spacer()
+                VStack(alignment: .trailing, spacing: 1) {
+                    Text(value)
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                        .foregroundStyle(AppColors.textPrimary)
+                    Text(secondary)
+                        .font(.caption2)
+                        .foregroundStyle(AppColors.textSecondary)
+                }
+            }
+            .padding(.vertical, 8)
+
+            if showDivider {
+                Divider()
             }
         }
     }
 
-    private func bootFlexRecommendation(age: Int, ability: AbilityLevel) -> String {
-        if age < 5 { return "Soft shell" }
-        if age <= 9 {
-            switch ability {
-            case .beginner: return "50–60"
-            case .intermediate: return "60–70"
-            case .advanced: return "60–80"
-            }
+    private func bootTip(confidence: BootSizeConfidence) -> String {
+        switch confidence {
+        case .measured:
+            return "Ski boots should fit snugly — never buy more than 1.5 cm too large. BSL is printed on the boot sole; verify after purchase for accurate DIN settings."
+        case .fromShoeSize:
+            return "Boot size is approximate — street shoe sizes vary by brand. For best results, measure foot length in cm (heel to longest toe) or try boots on in store."
+        case .fromHeight:
+            return "This is a rough estimate. For accurate boot sizing, measure foot length in cm or enter EU shoe size in the calculator."
+        case .hasBoots:
+            return "BSL is used to calculate your DIN binding release setting. Verify the BSL matches the number printed on your boot sole."
         }
-        if age <= 12 {
-            switch ability {
-            case .beginner: return "60–70"
-            case .intermediate: return "70–80"
-            case .advanced: return "80–90"
-            }
-        }
-        switch ability {
-        case .beginner: return "70–80"
-        case .intermediate: return "80–100"
-        case .advanced: return "90–110"
-        }
-    }
-
-    private func growthRoomGuide(age: Int) -> String {
-        if age <= 10 { return "1.0–1.5 cm" }
-        if age <= 14 { return "0.5–1.0 cm" }
-        return "0–0.5 cm"
     }
 
     private func helmetGuideCard(age: Int) -> some View {
@@ -583,9 +645,11 @@ struct SkiShopModeView: View {
                             if let pole = recommendation.xcSkatePoleLength {
                                 shopRow("XC Skate Poles", "\(pole) cm", "arrow.up.and.down", AppColors.secondary)
                             }
-                            if let boot = recommendation.bootSizeRecommendation {
+                            let boot = recommendation.bootSizeRecommendation
+                            if boot.confidence != .hasBoots {
                                 shopRow("Boot Size", "Mondo \(boot.recommendedMondoCm) (EU \(boot.euSize))", "shoe.2.fill", Color(hex: "795548"))
                             }
+                            shopRow("BSL", "\(boot.estimatedBSL) mm", "ruler.fill", Color(hex: "795548"))
                         }
                         .padding(.horizontal, 20)
 

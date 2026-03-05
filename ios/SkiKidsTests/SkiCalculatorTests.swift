@@ -286,36 +286,62 @@ final class SkiCalculatorTests: XCTestCase {
 
     func testMondoToEUSize() {
         XCTAssertEqual(SkiCalculator.mondoToEUSize(mondoMm: 150), "24")
-        XCTAssertEqual(SkiCalculator.mondoToEUSize(mondoMm: 170), "27.5")
-        XCTAssertEqual(SkiCalculator.mondoToEUSize(mondoMm: 200), "32")
-        XCTAssertEqual(SkiCalculator.mondoToEUSize(mondoMm: 220), "35")
-        XCTAssertEqual(SkiCalculator.mondoToEUSize(mondoMm: 240), "38")
-        XCTAssertEqual(SkiCalculator.mondoToEUSize(mondoMm: 260), "39+")
+        XCTAssertEqual(SkiCalculator.mondoToEUSize(mondoMm: 170), "27")
+        XCTAssertEqual(SkiCalculator.mondoToEUSize(mondoMm: 200), "31.5")
+        XCTAssertEqual(SkiCalculator.mondoToEUSize(mondoMm: 210), "33")
+        XCTAssertEqual(SkiCalculator.mondoToEUSize(mondoMm: 220), "34.5")
+        XCTAssertEqual(SkiCalculator.mondoToEUSize(mondoMm: 240), "37")
+        XCTAssertEqual(SkiCalculator.mondoToEUSize(mondoMm: 250), "39")
+        XCTAssertEqual(SkiCalculator.mondoToEUSize(mondoMm: 260), "40+")
     }
 
     // MARK: - Boot Size Recommendation
 
     func testRecommendedBootSize_youngChild() {
-        let result = SkiCalculator.recommendedBootSize(footLengthMm: 170, age: 5)
+        let result = SkiCalculator.recommendedBootSize(footLengthMm: 170, age: 5, confidence: .measured)
         XCTAssertEqual(result.measuredFootLengthMm, 170)
         XCTAssertEqual(result.growthRoomMm, 15)
         XCTAssertEqual(result.recommendedMondoMm, 185)  // 170 + 15
-        XCTAssertEqual(result.euSize, "29.5")  // mondo 18.5 → EU 29.5
+        XCTAssertEqual(result.euSize, "29")  // mondo 18.5 → EU 29
         XCTAssertEqual(result.estimatedBSL, 215)  // BSL for 170mm foot
+        XCTAssertEqual(result.confidence, .measured)
     }
 
     func testRecommendedBootSize_olderChild() {
-        let result = SkiCalculator.recommendedBootSize(footLengthMm: 240, age: 12)
+        let result = SkiCalculator.recommendedBootSize(footLengthMm: 240, age: 12, confidence: .fromShoeSize)
         XCTAssertEqual(result.growthRoomMm, 10)
         XCTAssertEqual(result.recommendedMondoMm, 250)  // 240 + 10
-        XCTAssertEqual(result.euSize, "39+")
+        XCTAssertEqual(result.euSize, "39")
         XCTAssertEqual(result.estimatedBSL, 285)
+        XCTAssertEqual(result.confidence, .fromShoeSize)
     }
 
     func testRecommendedBootSize_teen() {
-        let result = SkiCalculator.recommendedBootSize(footLengthMm: 260, age: 15)
+        let result = SkiCalculator.recommendedBootSize(footLengthMm: 260, age: 15, confidence: .fromHeight)
         XCTAssertEqual(result.growthRoomMm, 5)
         XCTAssertEqual(result.recommendedMondoMm, 265)  // 260 + 5
         XCTAssertEqual(result.estimatedBSL, 305)
+    }
+
+    // MARK: - Boot Size from BSL (reverse lookup)
+
+    func testBootSizeFromBSL() {
+        let result = SkiCalculator.bootSizeFromBSL(bslMm: 258, age: 10)
+        XCTAssertEqual(result.estimatedBSL, 258)
+        XCTAssertEqual(result.confidence, .hasBoots)
+        XCTAssertEqual(result.growthRoomMm, 0)
+    }
+
+    // MARK: - Foot Length Estimation
+
+    func testEstimatedFootLengthFromShoeSize() {
+        XCTAssertEqual(SkiCalculator.estimatedFootLengthFromShoeSize(euSize: 32), 200)
+        XCTAssertEqual(SkiCalculator.estimatedFootLengthFromShoeSize(euSize: 27), 170)
+        XCTAssertEqual(SkiCalculator.estimatedFootLengthFromShoeSize(euSize: 38), 240)
+    }
+
+    func testEstimatedFootLengthFromHeight() {
+        // 130 * 0.152 = 19.76 → round to nearest 5mm = 200mm
+        XCTAssertEqual(SkiCalculator.estimatedFootLengthFromHeight(heightCm: 130), 200)
     }
 }

@@ -109,22 +109,30 @@ final class RecommendationEngineTests: XCTestCase {
         XCTAssertTrue(result.warnings.contains { $0.contains("foot length") })
     }
 
-    func testFootLength_includesBootRecommendation() {
+    func testFootLength_bootRecommendationMeasured() {
         let input = makeInput(bslInputMode: .footLength, footLengthMm: 200)
         let result = RecommendationEngine.calculate(input: input)
-        XCTAssertNotNil(result.bootSizeRecommendation)
-        XCTAssertEqual(result.bootSizeRecommendation?.measuredFootLengthMm, 200)
+        XCTAssertEqual(result.bootSizeRecommendation.measuredFootLengthMm, 200)
+        XCTAssertEqual(result.bootSizeRecommendation.confidence, .measured)
     }
 
-    func testNonFootLength_noBootRecommendation() {
-        let estimateInput = makeInput(bslInputMode: .estimate)
-        XCTAssertNil(RecommendationEngine.calculate(input: estimateInput).bootSizeRecommendation)
+    func testShoeSize_bootRecommendationFromShoeSize() {
+        let input = makeInput(bslInputMode: .shoeSize)
+        let result = RecommendationEngine.calculate(input: input)
+        XCTAssertEqual(result.bootSizeRecommendation.confidence, .fromShoeSize)
+    }
 
-        let bslInput = makeInput(bslInputMode: .bsl, bslMm: 250)
-        XCTAssertNil(RecommendationEngine.calculate(input: bslInput).bootSizeRecommendation)
+    func testEstimate_bootRecommendationFromHeight() {
+        let input = makeInput(bslInputMode: .estimate)
+        let result = RecommendationEngine.calculate(input: input)
+        XCTAssertEqual(result.bootSizeRecommendation.confidence, .fromHeight)
+    }
 
-        let shoeInput = makeInput(bslInputMode: .shoeSize)
-        XCTAssertNil(RecommendationEngine.calculate(input: shoeInput).bootSizeRecommendation)
+    func testBSL_bootRecommendationHasBoots() {
+        let input = makeInput(bslInputMode: .bsl, bslMm: 258)
+        let result = RecommendationEngine.calculate(input: input)
+        XCTAssertEqual(result.bootSizeRecommendation.confidence, .hasBoots)
+        XCTAssertEqual(result.bootSizeRecommendation.estimatedBSL, 258)
     }
 
     // MARK: - Helpers

@@ -51,12 +51,20 @@ struct PoleRecommendation {
     }
 }
 
+enum BootSizeConfidence: String {
+    case measured = "Based on foot measurement"
+    case fromShoeSize = "Estimated from shoe size"
+    case fromHeight = "Roughly estimated from height"
+    case hasBoots = "From your boot's BSL"
+}
+
 struct BootSizeRecommendation {
     let measuredFootLengthMm: Int
     let recommendedMondoMm: Int
     let growthRoomMm: Int
     let euSize: String
     let estimatedBSL: Int
+    let confidence: BootSizeConfidence
 
     var recommendedMondoCm: String {
         String(format: "%.1f", Double(recommendedMondoMm) / 10.0)
@@ -80,7 +88,7 @@ struct SkiRecommendation {
     let alpinePoleLength: Int?
     let xcClassicPoleLength: Int?
     let xcSkatePoleLength: Int?
-    let bootSizeRecommendation: BootSizeRecommendation?
+    let bootSizeRecommendation: BootSizeRecommendation
     let warnings: [String]
     let calculatedAt: Date
 
@@ -125,10 +133,11 @@ struct SkiRecommendation {
         if let pole = xcSkatePoleLength {
             lines.append("📏 XC Skate Poles: \(pole) cm")
         }
-        if let boot = bootSizeRecommendation {
+        let boot = bootSizeRecommendation
+        if boot.confidence != .hasBoots {
             lines.append("👢 Boot Size: Mondo \(boot.recommendedMondoCm) (EU \(boot.euSize))")
-            lines.append("   Foot: \(boot.measuredFootCm) cm + \(boot.growthRoomCm) cm growth room")
         }
+        lines.append("👢 BSL: \(boot.estimatedBSL) mm (\(boot.confidence.rawValue))")
 
         lines.append("")
         if dinResult != nil {
