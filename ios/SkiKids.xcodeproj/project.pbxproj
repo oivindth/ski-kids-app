@@ -1,0 +1,634 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AA000001 /* SkiKidsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100001 /* SkiKidsApp.swift */; };
+		AA000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100002 /* ContentView.swift */; };
+		AA000003 /* Child.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100003 /* Child.swift */; };
+		AA000004 /* SkiRecommendation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100004 /* SkiRecommendation.swift */; };
+		AA000005 /* DINTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100005 /* DINTable.swift */; };
+		AA000006 /* ChildViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100006 /* ChildViewModel.swift */; };
+		AA000007 /* CalculatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100007 /* CalculatorViewModel.swift */; };
+		AA000008 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100008 /* HomeView.swift */; };
+		AA000009 /* ChildCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100009 /* ChildCardView.swift */; };
+		AA000010 /* CalculatorFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100010 /* CalculatorFormView.swift */; };
+		AA000011 /* ResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100011 /* ResultsView.swift */; };
+		AA000012 /* DINDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100012 /* DINDetailView.swift */; };
+		AA000013 /* QuickCalcView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100013 /* QuickCalcView.swift */; };
+		AA000014 /* TipsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100014 /* TipsView.swift */; };
+		AA000015 /* RecommendationCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100015 /* RecommendationCard.swift */; };
+		AA000016 /* SkiLengthVisual.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100016 /* SkiLengthVisual.swift */; };
+		AA000017 /* SkiCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100017 /* SkiCalculator.swift */; };
+		AA000018 /* DINCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100018 /* DINCalculator.swift */; };
+		AA000019 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA100019 /* Assets.xcassets */; };
+		AA000020 /* SharedFormSections.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100020 /* SharedFormSections.swift */; };
+		AA000021 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100021 /* OnboardingView.swift */; };
+		AA000022 /* ChildResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100022 /* ChildResultsView.swift */; };
+		AA000023 /* AppearanceMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100023 /* AppearanceMode.swift */; };
+		AA000024 /* AppearanceSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100024 /* AppearanceSettingsView.swift */; };
+		AA000025 /* SkiTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100025 /* SkiTypes.swift */; };
+		AA000026 /* RecommendationEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100026 /* RecommendationEngine.swift */; };
+		AAT00001 /* SkiCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAT10001 /* SkiCalculatorTests.swift */; };
+		AAT00002 /* DINCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAT10002 /* DINCalculatorTests.swift */; };
+		AAT00003 /* DINTableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAT10003 /* DINTableTests.swift */; };
+		AAT00004 /* RecommendationEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAT10004 /* RecommendationEngineTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AAPROXY1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AAPROJECT /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AATARGET1;
+			remoteInfo = SkiKids;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		AA100001 /* SkiKidsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkiKidsApp.swift; sourceTree = "<group>"; };
+		AA100002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		AA100003 /* Child.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Child.swift; sourceTree = "<group>"; };
+		AA100004 /* SkiRecommendation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkiRecommendation.swift; sourceTree = "<group>"; };
+		AA100005 /* DINTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DINTable.swift; sourceTree = "<group>"; };
+		AA100006 /* ChildViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildViewModel.swift; sourceTree = "<group>"; };
+		AA100007 /* CalculatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorViewModel.swift; sourceTree = "<group>"; };
+		AA100008 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		AA100009 /* ChildCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildCardView.swift; sourceTree = "<group>"; };
+		AA100010 /* CalculatorFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorFormView.swift; sourceTree = "<group>"; };
+		AA100011 /* ResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsView.swift; sourceTree = "<group>"; };
+		AA100012 /* DINDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DINDetailView.swift; sourceTree = "<group>"; };
+		AA100013 /* QuickCalcView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickCalcView.swift; sourceTree = "<group>"; };
+		AA100014 /* TipsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipsView.swift; sourceTree = "<group>"; };
+		AA100015 /* RecommendationCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationCard.swift; sourceTree = "<group>"; };
+		AA100016 /* SkiLengthVisual.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkiLengthVisual.swift; sourceTree = "<group>"; };
+		AA100017 /* SkiCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkiCalculator.swift; sourceTree = "<group>"; };
+		AA100018 /* DINCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DINCalculator.swift; sourceTree = "<group>"; };
+		AA100019 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AA100020 /* SharedFormSections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedFormSections.swift; sourceTree = "<group>"; };
+		AA100021 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		AA100022 /* ChildResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildResultsView.swift; sourceTree = "<group>"; };
+		AA100023 /* AppearanceMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceMode.swift; sourceTree = "<group>"; };
+		AA100024 /* AppearanceSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceSettingsView.swift; sourceTree = "<group>"; };
+		AA100025 /* SkiTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkiTypes.swift; sourceTree = "<group>"; };
+		AA100026 /* RecommendationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationEngine.swift; sourceTree = "<group>"; };
+		AAPROD001 /* SkiKids.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkiKids.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AATPROD1 /* SkiKidsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SkiKidsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AAT10001 /* SkiCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkiCalculatorTests.swift; sourceTree = "<group>"; };
+		AAT10002 /* DINCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DINCalculatorTests.swift; sourceTree = "<group>"; };
+		AAT10003 /* DINTableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DINTableTests.swift; sourceTree = "<group>"; };
+		AAT10004 /* RecommendationEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationEngineTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AABUILD01 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AATBLD01 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AAGROUP00 /* SkiKids */ = {
+			isa = PBXGroup;
+			children = (
+				AA100001 /* SkiKidsApp.swift */,
+				AA100019 /* Assets.xcassets */,
+				AAGRPMOD /* Models */,
+				AAGRPVM /* ViewModels */,
+				AAGRPVW /* Views */,
+				AAGRPUTL /* Utilities */,
+			);
+			path = SkiKids;
+			sourceTree = "<group>";
+		};
+		AAGRPCALC /* Calculator */ = {
+			isa = PBXGroup;
+			children = (
+				AA100010 /* CalculatorFormView.swift */,
+				AA100011 /* ResultsView.swift */,
+				AA100012 /* DINDetailView.swift */,
+			);
+			path = Calculator;
+			sourceTree = "<group>";
+		};
+		AAGRPCOMP /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				AA100015 /* RecommendationCard.swift */,
+				AA100016 /* SkiLengthVisual.swift */,
+				AA100020 /* SharedFormSections.swift */,
+				AA100021 /* OnboardingView.swift */,
+				AA100024 /* AppearanceSettingsView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		AAGRPHOME /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				AA100008 /* HomeView.swift */,
+				AA100009 /* ChildCardView.swift */,
+				AA100022 /* ChildResultsView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		AAGRPMOD /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				AA100003 /* Child.swift */,
+				AA100004 /* SkiRecommendation.swift */,
+				AA100005 /* DINTable.swift */,
+				AA100023 /* AppearanceMode.swift */,
+				AA100025 /* SkiTypes.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		AAGRPQC /* QuickCalc */ = {
+			isa = PBXGroup;
+			children = (
+				AA100013 /* QuickCalcView.swift */,
+			);
+			path = QuickCalc;
+			sourceTree = "<group>";
+		};
+		AAGRPTIPS /* Tips */ = {
+			isa = PBXGroup;
+			children = (
+				AA100014 /* TipsView.swift */,
+			);
+			path = Tips;
+			sourceTree = "<group>";
+		};
+		AAGRPUTL /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				AA100017 /* SkiCalculator.swift */,
+				AA100018 /* DINCalculator.swift */,
+				AA100026 /* RecommendationEngine.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		AAGRPVM /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				AA100006 /* ChildViewModel.swift */,
+				AA100007 /* CalculatorViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		AAGRPVW /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				AA100002 /* ContentView.swift */,
+				AAGRPHOME /* Home */,
+				AAGRPCALC /* Calculator */,
+				AAGRPQC /* QuickCalc */,
+				AAGRPTIPS /* Tips */,
+				AAGRPCOMP /* Components */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		AAGRPTST /* SkiKidsTests */ = {
+			isa = PBXGroup;
+			children = (
+				AAT10001 /* SkiCalculatorTests.swift */,
+				AAT10002 /* DINCalculatorTests.swift */,
+				AAT10003 /* DINTableTests.swift */,
+				AAT10004 /* RecommendationEngineTests.swift */,
+			);
+			path = SkiKidsTests;
+			sourceTree = "<group>";
+		};
+		AAPRODGRP /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AAPROD001 /* SkiKids.app */,
+				AATPROD1 /* SkiKidsTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AAROOTGRP = {
+			isa = PBXGroup;
+			children = (
+				AAGROUP00 /* SkiKids */,
+				AAGRPTST /* SkiKidsTests */,
+				AAPRODGRP /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AATARGET1 /* SkiKids */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AABCLIST1 /* Build configuration list for PBXNativeTarget "SkiKids" */;
+			buildPhases = (
+				AABUILD00 /* Sources */,
+				AABUILD01 /* Frameworks */,
+				AABUILD02 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SkiKids;
+			productName = SkiKids;
+			productReference = AAPROD001 /* SkiKids.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AATARGT2 /* SkiKidsTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AATCLIST /* Build configuration list for PBXNativeTarget "SkiKidsTests" */;
+			buildPhases = (
+				AATBLD00 /* Sources */,
+				AATBLD01 /* Frameworks */,
+				AATBLD02 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AATDEP01 /* PBXTargetDependency */,
+			);
+			name = SkiKidsTests;
+			productName = SkiKidsTests;
+			productReference = AATPROD1 /* SkiKidsTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AAPROJECT /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					AATARGET1 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					AATARGT2 = {
+						CreatedOnToolsVersion = 15.0;
+						TestTargetID = AATARGET1;
+					};
+				};
+			};
+			buildConfigurationList = AABCLIST0 /* Build configuration list for PBXProject "SkiKids" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = AAROOTGRP;
+			productRefGroup = AAPRODGRP /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AATARGET1 /* SkiKids */,
+				AATARGT2 /* SkiKidsTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AABUILD02 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA000019 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AATBLD02 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AABUILD00 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA000001 /* SkiKidsApp.swift in Sources */,
+				AA000002 /* ContentView.swift in Sources */,
+				AA000003 /* Child.swift in Sources */,
+				AA000004 /* SkiRecommendation.swift in Sources */,
+				AA000005 /* DINTable.swift in Sources */,
+				AA000006 /* ChildViewModel.swift in Sources */,
+				AA000007 /* CalculatorViewModel.swift in Sources */,
+				AA000008 /* HomeView.swift in Sources */,
+				AA000009 /* ChildCardView.swift in Sources */,
+				AA000010 /* CalculatorFormView.swift in Sources */,
+				AA000011 /* ResultsView.swift in Sources */,
+				AA000012 /* DINDetailView.swift in Sources */,
+				AA000013 /* QuickCalcView.swift in Sources */,
+				AA000014 /* TipsView.swift in Sources */,
+				AA000015 /* RecommendationCard.swift in Sources */,
+				AA000016 /* SkiLengthVisual.swift in Sources */,
+				AA000017 /* SkiCalculator.swift in Sources */,
+				AA000018 /* DINCalculator.swift in Sources */,
+				AA000020 /* SharedFormSections.swift in Sources */,
+				AA000021 /* OnboardingView.swift in Sources */,
+				AA000022 /* ChildResultsView.swift in Sources */,
+				AA000023 /* AppearanceMode.swift in Sources */,
+				AA000024 /* AppearanceSettingsView.swift in Sources */,
+				AA000025 /* SkiTypes.swift in Sources */,
+				AA000026 /* RecommendationEngine.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AATBLD00 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AAT00001 /* SkiCalculatorTests.swift in Sources */,
+				AAT00002 /* DINCalculatorTests.swift in Sources */,
+				AAT00003 /* DINTableTests.swift in Sources */,
+				AAT00004 /* RecommendationEngineTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AATDEP01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AATARGET1 /* SkiKids */;
+			targetProxy = AAPROXY1 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		AABCONF01 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_CYCLE = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AABCONF02 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_CYCLE = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AABCONF03 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = P9822C33R2;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.skikids.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		AABCONF04 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = P9822C33R2;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.skikids.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		AATCONF1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P9822C33R2;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.skikids.app.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SkiKids.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SkiKids";
+			};
+			name = Debug;
+		};
+		AATCONF2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P9822C33R2;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.skikids.app.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SkiKids.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SkiKids";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AABCLIST0 /* Build configuration list for PBXProject "SkiKids" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AABCONF01 /* Debug */,
+				AABCONF02 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AABCLIST1 /* Build configuration list for PBXNativeTarget "SkiKids" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AABCONF03 /* Debug */,
+				AABCONF04 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AATCLIST /* Build configuration list for PBXNativeTarget "SkiKidsTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AATCONF1 /* Debug */,
+				AATCONF2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AAPROJECT /* Project object */;
+}
