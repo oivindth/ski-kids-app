@@ -1,22 +1,44 @@
 # SkiKids
 
-iOS app helping parents find correct ski equipment sizes for their children.
+Native mobile apps helping parents find correct ski equipment sizes for their children.
 
-## Tech Stack
+## Project Structure
+
+```
+ski-kids-app/
+├── ios/                    # iOS app (Swift + SwiftUI)
+│   ├── SkiKids/            # Source code
+│   └── SkiKids.xcodeproj/  # Xcode project
+├── android/                # Android app (Kotlin + Jetpack Compose) — planned
+├── docs/                   # Shared documentation
+│   ├── REQUIREMENTS.md     # Formulas, DIN tables, sizing spec
+│   └── UX-DESIGN.md        # Design guidelines
+├── react-native/           # DEPRECATED — Expo prototype, kept for reference only
+└── CLAUDE.md
+```
+
+## iOS Tech Stack
 
 - **Language:** Swift (iOS 17+)
 - **UI:** SwiftUI with @Observable view models
 - **Persistence:** SwiftData (@Model, @Query)
 - **Build:** Xcode project (no SPM dependencies)
 
-## Architecture
+## Android Tech Stack (planned)
+
+- **Language:** Kotlin
+- **UI:** Jetpack Compose with Material 3
+- **Persistence:** Room
+- **Build:** Gradle (Kotlin DSL)
+
+## iOS Architecture
 
 ```
-SkiKids/
+ios/SkiKids/
   SkiKidsApp.swift          # Entry point, injects modelContainer
   Models/                   # SwiftData entities and value types
   Utilities/                # Pure calculation logic (no UI)
-  ViewModels/               # @Observable classes bridging models ↔ views
+  ViewModels/               # @Observable classes bridging models → views
   Views/                    # SwiftUI views organized by feature
     Home/                   # Child profile list
     Calculator/             # Form, results, DIN detail
@@ -38,11 +60,11 @@ SkiKids/
 - Colors defined in `AppColors` (ContentView.swift) using hex extension
 - Reusable form components: `FormCard`, `StepperRow`, `AbilityRow`, `SkiTypeRow`
 - Enums `AbilityLevel`, `SkiType`, `DINCode`, `BSLRange` defined in Models/
-- Requirements and sizing formulas documented in REQUIREMENTS.md
+- Requirements and sizing formulas documented in docs/REQUIREMENTS.md
 
 ## Testing DIN Values
 
-When modifying DIN calculations, verify against the ISO 11088 table in REQUIREMENTS.md Appendix A. Key test cases:
+When modifying DIN calculations, verify against the ISO 11088 table in docs/REQUIREMENTS.md Appendix A. Key test cases:
 - Child 25kg, 130cm, age 8, beginner → Code D, junior adjusted to Code C
 - Junior adjustment: age ≤9 → shift one code up (lower/safer), per ISO 11088
 - Height adjustment: for children ≤12, keep the weight-based (lower) code

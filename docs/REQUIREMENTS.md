@@ -1,9 +1,9 @@
 # Kids' Ski Equipment Sizing App — Product Requirements Document
 
-**Version:** 1.1
-**Date:** 2026-03-04
+**Version:** 1.2
+**Date:** 2026-03-05
 **Author:** Product Owner
-**Status:** Updated to match current implementation
+**Status:** Updated — input ranges, helmet sizes, platform-neutral language, pseudo-code corrections
 
 ---
 
@@ -36,7 +36,7 @@ The app uses a three-tab layout:
 
 | Tab | Purpose |
 |---|---|
-| **My Kids** | Saved child profiles with persistent data (SwiftData). Tapping a profile shows results immediately. |
+| **My Kids** | Saved child profiles with persistent local storage. Tapping a profile shows results immediately. |
 | **Quick Calc** | Ephemeral calculator for one-off sizing. Results are not saved. |
 | **Tips & Info** | Static reference content: measuring guide, equipment tips, wax guide, packing checklist. |
 
@@ -46,8 +46,8 @@ The app uses a three-tab layout:
 2. **Tap a profile** → navigates to **ChildResultsView** showing calculated recommendations immediately
 3. **"Edit" toolbar button** → pushes **CalculatorFormView** for editing measurements
 4. **Save** → pops back to results, which auto-recalculate from updated data
-5. **"+" button** → opens CalculatorFormView as a sheet for adding a new child
-6. **New child flow**: fill form → Calculate → view results → Save Profile (persists to SwiftData) → dismiss
+5. **"+" button** → opens calculator form as a modal/sheet for adding a new child
+6. **New child flow**: fill form → Calculate → view results → Save Profile (persists locally) → dismiss
 
 ### Navigation Flow — Quick Calc
 
@@ -58,7 +58,7 @@ The app uses a three-tab layout:
 
 ### Onboarding
 
-First launch shows a full-screen onboarding view. Dismissed via "Get Started" button. State persisted via `@AppStorage("hasSeenOnboarding")`.
+First launch shows a full-screen onboarding view. Dismissed via "Get Started" button. State persisted locally (e.g., UserDefaults on iOS, SharedPreferences on Android).
 
 ### Appearance Setting
 
@@ -70,7 +70,7 @@ Manual dark/light mode control via a settings sheet (gear icon on My Kids tab):
 | Light | Forces light mode |
 | Dark | Forces dark mode |
 
-Persisted via `@AppStorage("appearanceMode")`. Applied as `.preferredColorScheme()` on the root TabView.
+Persisted locally. Applied at the app root level (e.g., `.preferredColorScheme()` on iOS, `AppCompatDelegate.setDefaultNightMode()` on Android).
 
 ---
 
@@ -81,10 +81,10 @@ These are the inputs collected per child profile. All fields except name are req
 | Field | Type | Constraints | Notes |
 |---|---|---|---|
 | Child Name | Text (optional) | Max 50 chars | For profile identification |
-| Height | Integer (cm) | 60–200 cm | Measured without shoes |
-| Weight | Integer (kg) | 8–80 kg | Used for DIN and pole sizing |
-| Age | Integer (years) | 2–17 | Used for DIN adjustment and age-bracket logic |
-| Boot Sole Length (BSL) | Integer (mm) | 150–330 mm | Optional; needed for precise DIN lookup. Can be estimated from shoe size or height if unknown |
+| Height | Integer (cm) | 60–210 cm | Measured without shoes |
+| Weight | Integer (kg) | 8–120 kg | Used for DIN and pole sizing |
+| Age | Integer (years) | 2–99 | Used for DIN adjustment and age-bracket logic |
+| Boot Sole Length (BSL) | Integer (mm) | 150–380 mm | Optional; needed for precise DIN lookup. Can be estimated from shoe size or height if unknown |
 | Ability Level | Enum | Beginner / Intermediate / Advanced | Used for ski length and DIN type |
 | Ski Type | Enum (multi-select) | Alpine, XC Classic, XC Skate | Determines which calculations to show |
 
@@ -253,7 +253,7 @@ This is the most common method used in ski shops and is the primary method for c
 ### Method 2: Explicit Formulas by Ability
 
 ```swift
-func alpineSkiLength(heightCm: Int, ability: Ability) -> (min: Int, max: Int) {
+func alpineSkiLength(heightCm: Int, age: Int, ability: Ability) -> (min: Int, max: Int) {
     switch ability {
     case .beginner:
         let min = Int(Double(heightCm) * 0.85)
@@ -402,8 +402,7 @@ Rounded to nearest 5 cm.
 
 ```swift
 func alpinePoleLength(heightCm: Int) -> Int {
-    let calculated = Double(heightCm) * 0.68
-    return roundToNearestFive(Int(calculated))
+    return roundToNearestFive(Double(heightCm) * 0.68)
 }
 ```
 
@@ -431,8 +430,7 @@ The tip of the pole, when held normally, should reach the skier's armpit.
 
 ```swift
 func xcClassicPoleLength(heightCm: Int) -> Int {
-    let calculated = Double(heightCm) * 0.84
-    return roundToNearestFive(Int(calculated))
+    return roundToNearestFive(Double(heightCm) * 0.84)
 }
 ```
 
@@ -462,8 +460,7 @@ The tip of the pole should reach between chin and nose when standing.
 
 ```swift
 func xcSkatePoleLength(heightCm: Int) -> Int {
-    let calculated = Double(heightCm) * 0.89
-    return roundToNearestFive(Int(calculated))
+    return roundToNearestFive(Double(heightCm) * 0.89)
 }
 ```
 
@@ -557,7 +554,7 @@ XC boots are sized identically to Mondo point / EU sizing. Key differences:
 
 ### 1. Child Profiles (Implemented)
 
-- Multiple child profiles stored via SwiftData
+- Multiple child profiles stored locally (SwiftData on iOS, Room on Android)
 - Profile data: name (optional), height, weight, age, BSL (optional), ability level, ski types, last calculated date, created date
 - Profiles sorted by creation date (newest first)
 - Swipe-to-delete with confirmation alert
@@ -589,10 +586,10 @@ The app estimates helmet size in the results view based on age:
 
 | Age | Estimated Size |
 |---|---|
-| ≤ 4 | 48–52 cm (XS) |
-| 5–8 | 52–55.5 cm (S) |
-| 9–12 | 55.5–59 cm (M) |
-| 13+ | 55.5–62 cm (M/L) |
+| ≤ 3 | 47–51 cm (XS) |
+| 4–6 | 51–55 cm (S) |
+| 7–11 | 55–59 cm (M) |
+| 12+ | 55–62 cm (M/L) |
 
 Note: This is an estimate. The app advises measuring head circumference for accurate sizing.
 
@@ -617,7 +614,7 @@ Manual dark/light/system mode toggle accessible from the gear icon on the My Kid
 The following features from the original requirements are not yet implemented:
 
 - **Growth tracking and upgrade alerts** — track measurements over time and alert when equipment is outgrown
-- **iCloud sync** — sync profiles across devices
+- **Cloud sync** — sync profiles across devices (iCloud on iOS, platform-appropriate on Android)
 - **Date of birth** — auto-update age from DOB
 - **Boot sizing calculator** — Mondo point recommendations from foot length
 - **Per-child equipment checklists** — currently only a global checklist in Tips
