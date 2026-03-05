@@ -128,19 +128,31 @@ struct SkiCalculator {
             return SkiLengthRange(minCm: len, maxCm: len)
         }
 
-        switch effectiveAbility {
-        case .beginner:
-            let minLen = roundToNearestFive(Double(heightCm) * 0.85)
-            let maxLen = roundToNearestFive(Double(heightCm) * 0.90)
-            return SkiLengthRange(minCm: minLen, maxCm: maxLen)
-        case .intermediate:
-            let minLen = roundToNearestFive(Double(heightCm) * 0.90)
-            let maxLen = roundToNearestFive(Double(heightCm) * 0.95)
-            return SkiLengthRange(minCm: minLen, maxCm: maxLen)
-        case .advanced:
-            let minLen = roundToNearestFive(Double(heightCm) * 0.95)
-            let maxLen = roundToNearestFive(Double(heightCm) * 1.00)
-            return SkiLengthRange(minCm: minLen, maxCm: maxLen)
+        let (minFactor, maxFactor) = alpineMultipliers(age: age, ability: effectiveAbility)
+        let minLen = roundToNearestFive(Double(heightCm) * minFactor)
+        let maxLen = roundToNearestFive(Double(heightCm) * maxFactor)
+        return SkiLengthRange(minCm: minLen, maxCm: maxLen)
+    }
+
+    private static func alpineMultipliers(age: Int, ability: AbilityLevel) -> (min: Double, max: Double) {
+        if age <= 10 {
+            switch ability {
+            case .beginner:     return (0.75, 0.85)
+            case .intermediate: return (0.85, 0.90)
+            case .advanced:     return (0.88, 0.93)
+            }
+        } else if age <= 12 {
+            switch ability {
+            case .beginner:     return (0.80, 0.88)
+            case .intermediate: return (0.88, 0.93)
+            case .advanced:     return (0.92, 0.97)
+            }
+        } else {
+            switch ability {
+            case .beginner:     return (0.85, 0.90)
+            case .intermediate: return (0.90, 0.95)
+            case .advanced:     return (0.95, 1.00)
+            }
         }
     }
 

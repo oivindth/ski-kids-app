@@ -1,9 +1,9 @@
 # Kids' Ski Equipment Sizing App — Product Requirements Document
 
-**Version:** 1.2
+**Version:** 1.3
 **Date:** 2026-03-05
 **Author:** Product Owner
-**Status:** Updated — input ranges, helmet sizes, platform-neutral language, pseudo-code corrections
+**Status:** Updated — age-bracketed alpine ski sizing, input ranges, helmet sizes, platform-neutral language
 
 ---
 
@@ -234,47 +234,84 @@ func roundToNearestFive(_ value: Int) -> Int {
 
 ### Method 1: Height-Based Body Reference (Industry Standard)
 
-This is the most common method used in ski shops and is the primary method for children who do not yet have a precise ability classification.
+This is the most common method used in ski shops. The reference point varies by age — children should use proportionally shorter skis than adults for control and safety. Sources: REI, Rossignol, Salomon junior guides, PSIA fitting recommendations.
+
+**Kids (ages 7–12) — chest to nose range:**
 
 | Ability Level | Ski tip relative to child | Approximate formula |
 |---|---|---|
-| Beginner | Chin to nose height | height × 0.85 to height × 0.90 |
-| Intermediate | Nose to forehead | height × 0.90 to height × 0.95 |
-| Advanced | Forehead to top of head, or taller | height × 0.95 to height × 1.00 |
+| Beginner | Chest to chin | height × 0.75 to height × 0.85 |
+| Intermediate | Chin to nose | height × 0.85 to height × 0.90 |
+| Advanced | Nose to forehead | height × 0.88 to height × 0.93 |
 
-**Example for a 120 cm child:**
+**Preteens (ages 11–12) — transitional:**
+
+| Ability Level | Ski tip relative to child | Approximate formula |
+|---|---|---|
+| Beginner | Chest to chin (upper) | height × 0.80 to height × 0.88 |
+| Intermediate | Chin to nose | height × 0.88 to height × 0.93 |
+| Advanced | Nose to forehead | height × 0.92 to height × 0.97 |
+
+**Teens/Adults (ages 13+) — standard adult sizing:**
+
+| Ability Level | Ski tip relative to skier | Approximate formula |
+|---|---|---|
+| Beginner | Chin to nose | height × 0.85 to height × 0.90 |
+| Intermediate | Nose to forehead | height × 0.90 to height × 0.95 |
+| Advanced | Forehead to top of head | height × 0.95 to height × 1.00 |
+
+**Example for a 120 cm, 8-year-old child:**
 
 | Level | Range | Example lengths |
 |---|---|---|
-| Beginner | 120 × 0.85 to 0.90 | 102–108 cm → round to 100–110 cm |
-| Intermediate | 120 × 0.90 to 0.95 | 108–114 cm → round to 110–115 cm |
-| Advanced | 120 × 0.95 to 1.00 | 114–120 cm → round to 115–120 cm |
+| Beginner | 120 × 0.75 to 0.85 | 90–102 cm → round to 90–100 cm |
+| Intermediate | 120 × 0.85 to 0.90 | 102–108 cm → round to 100–110 cm |
+| Advanced | 120 × 0.88 to 0.93 | 106–112 cm → round to 105–110 cm |
 
-### Method 2: Explicit Formulas by Ability
+**Example for a 165 cm, 15-year-old teen:**
 
-```swift
-func alpineSkiLength(heightCm: Int, age: Int, ability: Ability) -> (min: Int, max: Int) {
-    switch ability {
-    case .beginner:
-        let min = Int(Double(heightCm) * 0.85)
-        let max = Int(Double(heightCm) * 0.90)
-        return (roundToNearestFive(min), roundToNearestFive(max))
-    case .intermediate:
-        let min = Int(Double(heightCm) * 0.90)
-        let max = Int(Double(heightCm) * 0.95)
-        return (roundToNearestFive(min), roundToNearestFive(max))
-    case .advanced:
-        let min = Int(Double(heightCm) * 0.95)
-        let max = Int(Double(heightCm) * 1.00)
-        return (roundToNearestFive(min), roundToNearestFive(max))
-    }
-}
+| Level | Range | Example lengths |
+|---|---|---|
+| Beginner | 165 × 0.85 to 0.90 | 140–149 cm → round to 140–150 cm |
+| Intermediate | 165 × 0.90 to 0.95 | 149–157 cm → round to 150–155 cm |
+| Advanced | 165 × 0.95 to 1.00 | 157–165 cm → round to 155–165 cm |
+
+### Method 2: Explicit Formulas by Age and Ability
+
+The function uses age brackets to select appropriate multipliers. Younger children get proportionally shorter skis for control and safety.
+
+```
+alpineSkiLength(heightCm, age, ability) -> (min, max):
+
+  // Special cases
+  if age <= 3:       return (height - 15, height - 10), minimum 50 cm
+  if age 4-6, beginner: return height × 0.80 (single value)
+  if age <= 6, advanced: downgrade to intermediate
+
+  // Age-bracketed multipliers
+  Age 7-10:
+    beginner:     height × 0.75 to 0.85
+    intermediate: height × 0.85 to 0.90
+    advanced:     height × 0.88 to 0.93
+
+  Age 11-12:
+    beginner:     height × 0.80 to 0.88
+    intermediate: height × 0.88 to 0.93
+    advanced:     height × 0.92 to 0.97
+
+  Age 13+:
+    beginner:     height × 0.85 to 0.90
+    intermediate: height × 0.90 to 0.95
+    advanced:     height × 0.95 to 1.00
+
+  Round all results to nearest 5 cm.
 ```
 
 ### Age/Size Exceptions
 
 - Children under 4 years (age ≤ 3): use learner ski packages sized at height – 15 to height – 10 cm (minimum 50 cm). These are often packaged as complete systems (skis + bindings) and do not require DIN setting.
 - Children 4–6 years, beginner: override formula uses height × 0.80 to prioritize control and confidence.
+- Children 4–6 years, intermediate: uses height × 0.80 to height × 0.85 (same bracket as 7–10 beginner upper range).
 - Children 6 and under with "Advanced" ability: downgrade to Intermediate sizing for safety and manoeuvrability.
 
 ### Soft vs. Stiff Flex Note
