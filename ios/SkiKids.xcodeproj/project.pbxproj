@@ -31,6 +31,8 @@
 		AA000022 /* ChildResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100022 /* ChildResultsView.swift */; };
 		AA000023 /* AppearanceMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100023 /* AppearanceMode.swift */; };
 		AA000024 /* AppearanceSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100024 /* AppearanceSettingsView.swift */; };
+		AA000025 /* SkiTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100025 /* SkiTypes.swift */; };
+		AA000026 /* RecommendationEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100026 /* RecommendationEngine.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +60,8 @@
 		AA100022 /* ChildResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildResultsView.swift; sourceTree = "<group>"; };
 		AA100023 /* AppearanceMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceMode.swift; sourceTree = "<group>"; };
 		AA100024 /* AppearanceSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceSettingsView.swift; sourceTree = "<group>"; };
+		AA100025 /* SkiTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkiTypes.swift; sourceTree = "<group>"; };
+		AA100026 /* RecommendationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationEngine.swift; sourceTree = "<group>"; };
 		AAPROD001 /* SkiKids.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkiKids.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -124,6 +128,7 @@
 				AA100004 /* SkiRecommendation.swift */,
 				AA100005 /* DINTable.swift */,
 				AA100023 /* AppearanceMode.swift */,
+				AA100025 /* SkiTypes.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -149,6 +154,7 @@
 			children = (
 				AA100017 /* SkiCalculator.swift */,
 				AA100018 /* DINCalculator.swift */,
+				AA100026 /* RecommendationEngine.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -283,6 +289,8 @@
 				AA000022 /* ChildResultsView.swift in Sources */,
 				AA000023 /* AppearanceMode.swift in Sources */,
 				AA000024 /* AppearanceSettingsView.swift in Sources */,
+				AA000025 /* SkiTypes.swift in Sources */,
+				AA000026 /* RecommendationEngine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -119,7 +119,7 @@ struct SkiTypeFormSection: View {
 }
 
 struct BSLFormSection: View {
-    @Binding var bslInputMode: CalculatorViewModel.BSLInputMode
+    @Binding var bslInputMode: BSLInputMode
     @Binding var bslMm: Int
     @Binding var shoeSize: Int
     var bslError: String? = nil
@@ -128,7 +128,7 @@ struct BSLFormSection: View {
         FormCard(title: "Boot Sole Length", icon: "shoe.fill", iconColor: AppColors.secondary) {
             VStack(alignment: .leading, spacing: 14) {
                 Picker("Boot Info", selection: $bslInputMode) {
-                    ForEach(CalculatorViewModel.BSLInputMode.allCases, id: \.self) { mode in
+                    ForEach(BSLInputMode.allCases, id: \.self) { mode in
                         Text(mode.label).tag(mode)
                     }
                 }

@@ -3,20 +3,6 @@ import Observation
 
 @Observable
 final class CalculatorViewModel {
-    enum BSLInputMode: Int, CaseIterable {
-        case estimate = 0
-        case shoeSize = 1
-        case bsl = 2
-
-        var label: String {
-            switch self {
-            case .estimate: return "Estimate"
-            case .shoeSize: return "Shoe Size"
-            case .bsl: return "BSL"
-            }
-        }
-    }
-
     var name: String = ""
     var heightCm: Int = 120
     var weightKg: Int = 25
@@ -83,97 +69,19 @@ final class CalculatorViewModel {
         hasAttemptedCalculation = true
         guard isValid else { return }
 
-        let effectiveBSL: Int
-        var bslEstimationMethod: String? = nil
-        if bslInputMode == .bsl {
-            effectiveBSL = bslMm
-        } else if bslInputMode == .shoeSize {
-            effectiveBSL = SkiCalculator.estimatedBSL(fromEUSize: shoeSize)
-            bslEstimationMethod = "shoe size (EU \(shoeSize))"
-        } else {
-            effectiveBSL = SkiCalculator.estimatedBSLFromHeight(heightCm: heightCm)
-            bslEstimationMethod = "height (\(heightCm) cm)"
-        }
-
-        let skiTypesArray = Array(selectedSkiTypes)
-        var globalWarnings = DINCalculator.warnings(for: (
-            age: age,
-            heightCm: heightCm,
-            weightKg: weightKg,
-            ability: abilityLevel,
-            skiTypes: skiTypesArray
-        ))
-
-        let alpineLength: SkiLengthRange? = skiTypesArray.contains(.alpine)
-            ? SkiCalculator.alpineSkiLength(heightCm: heightCm, age: age, ability: abilityLevel)
-            : nil
-
-        var dinResult: DINResult?
-        if skiTypesArray.contains(.alpine) {
-            if age <= 3 {
-                globalWarnings.append("DIN settings are not calculated for children age 3 and under. Please consult a certified ski school for binding setup.")
-            } else {
-                let result = DINCalculator.calculate(
-                    weightKg: weightKg,
-                    heightCm: heightCm,
-                    bslMm: effectiveBSL,
-                    age: age,
-                    ability: abilityLevel
-                )
-                dinResult = result
-                globalWarnings.append(contentsOf: result.warnings)
-            }
-        }
-
-        let xcClassicLength: SkiLengthRange? = skiTypesArray.contains(.xcClassic)
-            ? SkiCalculator.classicXCSkiLength(heightCm: heightCm, age: age, ability: abilityLevel)
-            : nil
-
-        let xcSkateLength: SkiLengthRange? = skiTypesArray.contains(.xcSkate)
-            ? SkiCalculator.skateXCSkiLength(heightCm: heightCm, age: age, ability: abilityLevel)
-            : nil
-
-        let alpinePole: Int? = skiTypesArray.contains(.alpine)
-            ? SkiCalculator.alpinePoleLength(heightCm: heightCm)
-            : nil
-
-        let xcClassicPole: Int? = skiTypesArray.contains(.xcClassic)
-            ? SkiCalculator.xcClassicPoleLength(heightCm: heightCm)
-            : nil
-
-        let xcSkatePole: Int? = (skiTypesArray.contains(.xcSkate) && xcSkateLength != nil)
-            ? SkiCalculator.xcSkatePoleLength(heightCm: heightCm)
-            : nil
-
-        if bslInputMode != .bsl && skiTypesArray.contains(.alpine) {
-            if let method = bslEstimationMethod {
-                globalWarnings.insert("Boot sole length not provided. BSL was estimated from \(method). Provide the actual Boot Sole Length (printed inside the boot) for accurate DIN results.", at: 0)
-            }
-        }
-
-        let snapshot = SkiRecommendation.ChildSnapshot(
+        let input = CalculatorInput(
             name: name,
             heightCm: heightCm,
             weightKg: weightKg,
             age: age,
+            bslMm: bslMm,
+            bslInputMode: bslInputMode,
+            shoeSize: shoeSize,
             abilityLevel: abilityLevel,
-            skiTypes: skiTypesArray
+            skiTypes: Array(selectedSkiTypes)
         )
 
-        recommendation = SkiRecommendation(
-            child: snapshot,
-            alpineSkiLength: alpineLength,
-            dinResult: dinResult,
-            xcClassicLength: xcClassicLength,
-            xcSkateLength: xcSkateLength,
-            alpinePoleLength: alpinePole,
-            xcClassicPoleLength: xcClassicPole,
-            xcSkatePoleLength: xcSkatePole,
-            warnings: globalWarnings.reduce(into: [String]()) { result, warning in
-                if !result.contains(warning) { result.append(warning) }
-            },
-            calculatedAt: Date()
-        )
+        recommendation = RecommendationEngine.calculate(input: input)
     }
 
     func populate(from child: Child) {
