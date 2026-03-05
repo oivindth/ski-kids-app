@@ -128,6 +128,12 @@ struct SkiCalculator {
             return SkiLengthRange(minCm: len, maxCm: len)
         }
 
+        if age >= 4 && age <= 6 && effectiveAbility == .intermediate {
+            let minLen = roundToNearestFive(Double(heightCm) * 0.80)
+            let maxLen = roundToNearestFive(Double(heightCm) * 0.85)
+            return SkiLengthRange(minCm: minLen, maxCm: maxLen)
+        }
+
         let (minFactor, maxFactor) = alpineMultipliers(age: age, ability: effectiveAbility)
         let minLen = roundToNearestFive(Double(heightCm) * minFactor)
         let maxLen = roundToNearestFive(Double(heightCm) * maxFactor)

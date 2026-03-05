@@ -41,12 +41,28 @@ final class SkiCalculatorTests: XCTestCase {
         XCTAssertEqual(result.maxCm, 90)
     }
 
+    func testAlpineAge5Intermediate_uses080to085() {
+        // Age 4-6 intermediate: 0.80–0.85
+        let result = SkiCalculator.alpineSkiLength(heightCm: 110, age: 5, ability: .intermediate)
+        // 110 * 0.80 = 88 → 90, 110 * 0.85 = 93.5 → 95
+        XCTAssertEqual(result.minCm, 90)
+        XCTAssertEqual(result.maxCm, 95)
+    }
+
     func testAlpineAge6Advanced_downgradedToIntermediate() {
         let result = SkiCalculator.alpineSkiLength(heightCm: 115, age: 6, ability: .advanced)
-        // Effective ability = intermediate, age ≤10 bracket: 0.85-0.90
-        // 115 * 0.85 = 97.75 → 100, 115 * 0.90 = 103.5 → 105
-        XCTAssertEqual(result.minCm, 100)
-        XCTAssertEqual(result.maxCm, 105)
+        // Effective ability = intermediate, hits 4-6 intermediate: 0.80-0.85
+        // 115 * 0.80 = 92 → 90, 115 * 0.85 = 97.75 → 100
+        XCTAssertEqual(result.minCm, 90)
+        XCTAssertEqual(result.maxCm, 100)
+    }
+
+    func testAlpineAge7Beginner_kidBracketBoundary() {
+        // Age 7 is the first age in the 7-10 bracket
+        let result = SkiCalculator.alpineSkiLength(heightCm: 120, age: 7, ability: .beginner)
+        // 120 * 0.75 = 90, 120 * 0.85 = 102 → 100
+        XCTAssertEqual(result.minCm, 90)
+        XCTAssertEqual(result.maxCm, 100)
     }
 
     func testAlpineAge8Beginner_usesKidMultipliers() {
@@ -87,6 +103,14 @@ final class SkiCalculatorTests: XCTestCase {
         // 150 * 0.88 = 132 → 130, 150 * 0.93 = 139.5 → 140
         XCTAssertEqual(result.minCm, 130)
         XCTAssertEqual(result.maxCm, 140)
+    }
+
+    func testAlpineAge13Intermediate_adultBracketBoundary() {
+        // Age 13 is the first age in the 13+ bracket
+        let result = SkiCalculator.alpineSkiLength(heightCm: 160, age: 13, ability: .intermediate)
+        // 160 * 0.90 = 144 → 145, 160 * 0.95 = 152 → 150
+        XCTAssertEqual(result.minCm, 145)
+        XCTAssertEqual(result.maxCm, 150)
     }
 
     func testAlpineAge14Beginner_usesAdultMultipliers() {
@@ -164,21 +188,36 @@ final class SkiCalculatorTests: XCTestCase {
 
     // MARK: - Pole Lengths
 
-    func testAlpinePoleLength() {
-        // 120 * 0.68 = 81.6 → 80
+    func testAlpinePoleLength_fromRequirementsTable() {
+        // Requirements example table: height → recommended pole
+        XCTAssertEqual(SkiCalculator.alpinePoleLength(heightCm: 90), 60)
+        XCTAssertEqual(SkiCalculator.alpinePoleLength(heightCm: 100), 70)
+        XCTAssertEqual(SkiCalculator.alpinePoleLength(heightCm: 110), 75)
         XCTAssertEqual(SkiCalculator.alpinePoleLength(heightCm: 120), 80)
-        // 140 * 0.68 = 95.2 → 95
+        XCTAssertEqual(SkiCalculator.alpinePoleLength(heightCm: 130), 90)
         XCTAssertEqual(SkiCalculator.alpinePoleLength(heightCm: 140), 95)
+        XCTAssertEqual(SkiCalculator.alpinePoleLength(heightCm: 150), 100)
+        XCTAssertEqual(SkiCalculator.alpinePoleLength(heightCm: 160), 110)
     }
 
-    func testXCClassicPoleLength() {
-        // 130 * 0.84 = 109.2 → 110
+    func testXCClassicPoleLength_fromRequirementsTable() {
+        XCTAssertEqual(SkiCalculator.xcClassicPoleLength(heightCm: 90), 75)
+        XCTAssertEqual(SkiCalculator.xcClassicPoleLength(heightCm: 100), 85)
+        XCTAssertEqual(SkiCalculator.xcClassicPoleLength(heightCm: 110), 90)
+        XCTAssertEqual(SkiCalculator.xcClassicPoleLength(heightCm: 120), 100)
         XCTAssertEqual(SkiCalculator.xcClassicPoleLength(heightCm: 130), 110)
+        XCTAssertEqual(SkiCalculator.xcClassicPoleLength(heightCm: 140), 120)
+        XCTAssertEqual(SkiCalculator.xcClassicPoleLength(heightCm: 150), 125)
     }
 
-    func testXCSkatePoleLength() {
-        // 140 * 0.89 = 124.6 → 125
+    func testXCSkatePoleLength_fromRequirementsTable() {
+        XCTAssertEqual(SkiCalculator.xcSkatePoleLength(heightCm: 100), 90)
+        XCTAssertEqual(SkiCalculator.xcSkatePoleLength(heightCm: 110), 100)
+        XCTAssertEqual(SkiCalculator.xcSkatePoleLength(heightCm: 120), 105)
+        XCTAssertEqual(SkiCalculator.xcSkatePoleLength(heightCm: 130), 115)
         XCTAssertEqual(SkiCalculator.xcSkatePoleLength(heightCm: 140), 125)
+        XCTAssertEqual(SkiCalculator.xcSkatePoleLength(heightCm: 150), 135)
+        XCTAssertEqual(SkiCalculator.xcSkatePoleLength(heightCm: 160), 140)
     }
 
     // MARK: - BSL Estimation
