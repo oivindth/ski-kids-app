@@ -33,7 +33,21 @@
 		AA000024 /* AppearanceSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100024 /* AppearanceSettingsView.swift */; };
 		AA000025 /* SkiTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100025 /* SkiTypes.swift */; };
 		AA000026 /* RecommendationEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA100026 /* RecommendationEngine.swift */; };
+		AAT00001 /* SkiCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAT10001 /* SkiCalculatorTests.swift */; };
+		AAT00002 /* DINCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAT10002 /* DINCalculatorTests.swift */; };
+		AAT00003 /* DINTableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAT10003 /* DINTableTests.swift */; };
+		AAT00004 /* RecommendationEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAT10004 /* RecommendationEngineTests.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AAPROXY1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AAPROJECT /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AATARGET1;
+			remoteInfo = SkiKids;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		AA100001 /* SkiKidsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkiKidsApp.swift; sourceTree = "<group>"; };
@@ -63,10 +77,22 @@
 		AA100025 /* SkiTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkiTypes.swift; sourceTree = "<group>"; };
 		AA100026 /* RecommendationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationEngine.swift; sourceTree = "<group>"; };
 		AAPROD001 /* SkiKids.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkiKids.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AATPROD1 /* SkiKidsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SkiKidsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AAT10001 /* SkiCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkiCalculatorTests.swift; sourceTree = "<group>"; };
+		AAT10002 /* DINCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DINCalculatorTests.swift; sourceTree = "<group>"; };
+		AAT10003 /* DINTableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DINTableTests.swift; sourceTree = "<group>"; };
+		AAT10004 /* RecommendationEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationEngineTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		AABUILD01 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AATBLD01 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -181,10 +207,22 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		AAGRPTST /* SkiKidsTests */ = {
+			isa = PBXGroup;
+			children = (
+				AAT10001 /* SkiCalculatorTests.swift */,
+				AAT10002 /* DINCalculatorTests.swift */,
+				AAT10003 /* DINTableTests.swift */,
+				AAT10004 /* RecommendationEngineTests.swift */,
+			);
+			path = SkiKidsTests;
+			sourceTree = "<group>";
+		};
 		AAPRODGRP /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				AAPROD001 /* SkiKids.app */,
+				AATPROD1 /* SkiKidsTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -193,6 +231,7 @@
 			isa = PBXGroup;
 			children = (
 				AAGROUP00 /* SkiKids */,
+				AAGRPTST /* SkiKidsTests */,
 				AAPRODGRP /* Products */,
 			);
 			sourceTree = "<group>";
@@ -217,6 +256,24 @@
 			productReference = AAPROD001 /* SkiKids.app */;
 			productType = "com.apple.product-type.application";
 		};
+		AATARGT2 /* SkiKidsTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AATCLIST /* Build configuration list for PBXNativeTarget "SkiKidsTests" */;
+			buildPhases = (
+				AATBLD00 /* Sources */,
+				AATBLD01 /* Frameworks */,
+				AATBLD02 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AATDEP01 /* PBXTargetDependency */,
+			);
+			name = SkiKidsTests;
+			productName = SkiKidsTests;
+			productReference = AATPROD1 /* SkiKidsTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -229,6 +286,10 @@
 				TargetAttributes = {
 					AATARGET1 = {
 						CreatedOnToolsVersion = 15.0;
+					};
+					AATARGT2 = {
+						CreatedOnToolsVersion = 15.0;
+						TestTargetID = AATARGET1;
 					};
 				};
 			};
@@ -246,6 +307,7 @@
 			projectRoot = "";
 			targets = (
 				AATARGET1 /* SkiKids */,
+				AATARGT2 /* SkiKidsTests */,
 			);
 		};
 /* End PBXProject section */
@@ -256,6 +318,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA000019 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AATBLD02 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,7 +363,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AATBLD00 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AAT00001 /* SkiCalculatorTests.swift in Sources */,
+				AAT00002 /* DINCalculatorTests.swift in Sources */,
+				AAT00003 /* DINTableTests.swift in Sources */,
+				AAT00004 /* RecommendationEngineTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AATDEP01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AATARGET1 /* SkiKids */;
+			targetProxy = AAPROXY1 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		AABCONF01 /* Debug */ = {
@@ -472,6 +560,44 @@
 			};
 			name = Release;
 		};
+		AATCONF1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P9822C33R2;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.skikids.app.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SkiKids.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SkiKids";
+			};
+			name = Debug;
+		};
+		AATCONF2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P9822C33R2;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.skikids.app.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SkiKids.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SkiKids";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -489,6 +615,15 @@
 			buildConfigurations = (
 				AABCONF03 /* Debug */,
 				AABCONF04 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AATCLIST /* Build configuration list for PBXNativeTarget "SkiKidsTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AATCONF1 /* Debug */,
+				AATCONF2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
